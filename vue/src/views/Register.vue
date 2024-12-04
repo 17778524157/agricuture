@@ -70,7 +70,10 @@ export default {
 <style>
   .wrapper {
     height: 100vh;
-    background-image: linear-gradient(to bottom right,  #4169E1 ,	#87CEFA);
     overflow: hidden;
+    background-image: url('../assets/background2.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 </style>
