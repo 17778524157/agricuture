@@ -15,9 +15,6 @@ import java.util.stream.Collectors;
  * <p>
  *  服务实现类
  * </p>
- *
- * @author
- * @since 2022-02-10
  */
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IMenuService {

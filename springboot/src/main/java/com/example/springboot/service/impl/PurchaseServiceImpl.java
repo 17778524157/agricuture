@@ -10,9 +10,6 @@ import org.springframework.stereotype.Service;
  * <p>
  *  服务实现类
  * </p>
- *
- * @author 
- * @since 2023-02-20
  */
 @Service
 public class PurchaseServiceImpl extends ServiceImpl<PurchaseMapper, Purchase> implements IPurchaseService {

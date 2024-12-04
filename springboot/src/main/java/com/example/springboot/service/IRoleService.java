@@ -9,9 +9,6 @@ import java.util.List;
  * <p>
  *  服务类
  * </p>
- *
- * @author
- * @since 2022-02-10
  */
 public interface IRoleService extends IService<Role> {
 
