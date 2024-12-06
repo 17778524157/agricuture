@@ -14,8 +14,6 @@ import lombok.Setter;
  * 
  * </p>
  *
- * @author 
- * @since 2024-11-19
  */
 @Getter
 @Setter
@@ -42,6 +40,5 @@ public class Farmland implements Serializable {
 
     @ApiModelProperty("农田负责人")
     private String keeper;
-
 
 }

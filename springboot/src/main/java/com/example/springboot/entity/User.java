@@ -19,8 +19,6 @@ import lombok.ToString;
  *
  * </p>
  *
- * @author
- * @since 2024-11-19
  */
 @Getter
 @Setter

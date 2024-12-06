@@ -14,8 +14,6 @@ import lombok.Setter;
  * 
  * </p>
  *
- * @author 
- * @since 2024-11-19
  */
 @Getter
 @Setter
