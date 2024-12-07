@@ -89146,3 +89146,5 @@
 127.0.0.1 - - [06/Dec/2024:15:18:32 +0800] "GET /js/chunk-f298ee2e.31a1f59b.js.map HTTP/1.1" 200 27561 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 127.0.0.1 - - [06/Dec/2024:15:18:33 +0800] "GET /js/chunk-b52f2f96.666d0eef.js.map HTTP/1.1" 200 27379 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 127.0.0.1 - - [06/Dec/2024:15:18:34 +0800] "GET /js/chunk-15bdc37d.02826358.js.map HTTP/1.1" 200 25931 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [06/Dec/2024:15:55:59 +0800] "GET /purchase HTTP/1.1" 200 3044 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [06/Dec/2024:17:53:27 +0800] "GET /purchase HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"

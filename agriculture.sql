@@ -31,7 +31,7 @@ CREATE TABLE `inventory` (
   `keeper` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL COMMENT '仓库管理员',
   `remark` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `inventory` (
 
 LOCK TABLES `inventory` WRITE;
 /*!40000 ALTER TABLE `inventory` DISABLE KEYS */;
-INSERT INTO `inventory` VALUES (1,'小麦','1号仓','产品区',1000,'哈哈','无'),(2,'农业无人机','1号仓','设备区',2,'哈哈','无'),(3,'尿素','1号仓','农资区',50,'哈哈','无'),(4,'多功能拖拉机','2号仓','设备区',1,'哈哈','无'),(5,'除草剂','2号仓','农资区',50,'哈哈','无');
+INSERT INTO `inventory` VALUES (1,'小麦','1号仓','产品区',1000,'哈哈哈','无'),(2,'农业无人机','1号仓','设备区',2,'哈哈哈','无'),(3,'尿素','1号仓','农资区',50,'哈哈哈','无'),(4,'多功能拖拉机','2号仓','设备区',1,'哈哈哈','无'),(5,'除草剂','2号仓','农资区',50,'哈哈哈','无'),(6,'11','11','1',1,'哈哈哈','1');
 /*!40000 ALTER TABLE `inventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -68,7 +68,7 @@ CREATE TABLE `notice` (
 
 LOCK TABLES `notice` WRITE;
 /*!40000 ALTER TABLE `notice` DISABLE KEYS */;
-INSERT INTO `notice` VALUES (10,'开启智慧农业元年','日前，农业农村部印发《全国智慧农业行动计划（2024—2028年）》（以下简称《行动计划》），提出在公共服务能力建设上，加快打造国家农业农村大数据平台、农业农村用地“一张图”和基础模型算法等公共服务产品；在产业布局上，着力推动主要作物大面积单产提升，培育一批智慧农场、智慧牧场、智慧渔场，推进全产业链数字化改造；在示范带动上，支持浙江先行先试，探索推广“伏羲农场”等未来应用场景。　　','2024-11-30 00:00:00','admin','http://localhost:9090/file/006d5c13b81644a4a2e9336d2f935165.jpg');
+INSERT INTO `notice` VALUES (10,'开启智慧农业元年','日前，农业农村部印发《全国智慧农业行动计划（2024—2028年）》（以下简称《行动计划》），提出在公共服务能力建设上，加快打造国家农业农村大数据平台、农业农村用地“一张图”和基础模型算法等公共服务产品；在产业布局上，着力推动主要作物大面积单产提升，培育一批智慧农场、智慧牧场、智慧渔场，推进全产业链数字化改造；在示范带动上，支持浙江先行先试，探索推广“伏羲农场”等未来应用场景。　　','2024-11-30 00:00:00','admin','http://localhost:9090/file/1de1a2792fef41919174c1f0388750ca.jpg');
 /*!40000 ALTER TABLE `notice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -99,7 +99,7 @@ CREATE TABLE `purchase` (
 
 LOCK TABLES `purchase` WRITE;
 /*!40000 ALTER TABLE `purchase` DISABLE KEYS */;
-INSERT INTO `purchase` VALUES (1,'尿素',200.00,50,'河南尿素厂','河南省南阳市','15938877193','王五','无'),(2,'除草剂',15.00,50,'河北农资厂','河北保定','15830097645','王五','无');
+INSERT INTO `purchase` VALUES (1,'尿素',200.00,50,'河南尿素厂','河南省南阳市','15938877193','王五五','无'),(2,'除草剂',15.00,50,'河北农资厂','河北保定','15830097645','王五五','无');
 /*!40000 ALTER TABLE `purchase` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -130,7 +130,7 @@ CREATE TABLE `sales` (
 
 LOCK TABLES `sales` WRITE;
 /*!40000 ALTER TABLE `sales` DISABLE KEYS */;
-INSERT INTO `sales` VALUES (1,'小麦',2.00,1000,'想念公司','河南省南阳市','18638760772','李四','无'),(2,'玉米',3.45,3000,'标点食品厂','河南南阳','15938876234','李四','无'),(3,'大豆',4.45,1500,'向阳豆腐厂','北京','18638769078','李四','无');
+INSERT INTO `sales` VALUES (1,'小麦',2.00,1000,'想念公司','河南省南阳市','18638760772','李四四','无'),(2,'玉米',3.45,3000,'标点食品厂','河南南阳','15938876234','李四四','无'),(3,'大豆',4.45,1500,'向阳豆腐厂','北京','18638769078','李四四','无');
 /*!40000 ALTER TABLE `sales` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,7 +160,7 @@ CREATE TABLE `statistic` (
   `pump` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL COMMENT '水泵状态',
   `keeper` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL COMMENT '农田负责人',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,7 +169,7 @@ CREATE TABLE `statistic` (
 
 LOCK TABLES `statistic` WRITE;
 /*!40000 ALTER TABLE `statistic` DISABLE KEYS */;
-INSERT INTO `statistic` VALUES (1,'1号田',3,'产业园1区','小麦',2000,'正常',26.0,40,70,1000,8.20,2000,'关闭','开启','关闭','张三'),(2,'2号田',5,'产业园2区','玉米',3500,'正常',27.0,76,56,980,7.40,1000,'开启','开启','关闭','张三'),(3,'3号田',3,'产业园3区','大豆',4000,'正常',30.0,69,45,789,7.50,2000,'关闭','开启','关闭','张三');
+INSERT INTO `statistic` VALUES (1,'1号田',3,'产业园1区','小麦',2000,'正常',26.0,40,70,1000,8.20,2000,'关闭','开启','关闭','张三三'),(2,'2号田',5,'产业园2区','玉米',3500,'正常',27.0,76,56,980,7.40,1000,'开启','开启','关闭','张三三'),(3,'3号田',3,'产业园3区','大豆',4000,'正常',30.0,69,45,789,7.50,2000,'关闭','开启','关闭','张三三'),(4,'4号田',10,'产业园2区','棉花',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'张三三');
 /*!40000 ALTER TABLE `statistic` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,7 +216,7 @@ CREATE TABLE `sys_file` (
   `is_delete` tinyint(1) DEFAULT '0' COMMENT '是否删除',
   `enable` tinyint(1) DEFAULT '1' COMMENT '是否禁用链接',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -225,7 +225,7 @@ CREATE TABLE `sys_file` (
 
 LOCK TABLES `sys_file` WRITE;
 /*!40000 ALTER TABLE `sys_file` DISABLE KEYS */;
-INSERT INTO `sys_file` VALUES (39,'92effbce5b51049a0fe0171b6b2f4587.jpeg','jpeg',119,'http://localhost:9090/file/056319a354b9496b91eba75a70a7f06e.jpeg','b23aca3520ca81d95db48a45e442fb00',0,1),(40,'1.jpg','jpg',1302,'http://localhost:9090/file/006d5c13b81644a4a2e9336d2f935165.jpg','ef953abb79e483660d123abaa548555f',0,1);
+INSERT INTO `sys_file` VALUES (39,'92effbce5b51049a0fe0171b6b2f4587.jpeg','jpeg',119,'http://localhost:9090/file/056319a354b9496b91eba75a70a7f06e.jpeg','b23aca3520ca81d95db48a45e442fb00',0,1),(40,'1.jpg','jpg',1302,'http://localhost:9090/file/006d5c13b81644a4a2e9336d2f935165.jpg','ef953abb79e483660d123abaa548555f',0,1),(41,'77cc879803f94c57e5a6acbbb6ef482.jpg','jpg',292,'http://localhost:9090/file/1de1a2792fef41919174c1f0388750ca.jpg','60439ed5e0f60f618c3ff1774540ea42',0,1),(42,'77cc879803f94c57e5a6acbbb6ef482.jpg','jpg',292,'http://localhost:9090/file/1de1a2792fef41919174c1f0388750ca.jpg','60439ed5e0f60f618c3ff1774540ea42',0,1),(43,'77cc879803f94c57e5a6acbbb6ef482.jpg','jpg',292,'http://localhost:9090/file/1de1a2792fef41919174c1f0388750ca.jpg','60439ed5e0f60f618c3ff1774540ea42',0,1),(44,'77cc879803f94c57e5a6acbbb6ef482.jpg','jpg',292,'http://localhost:9090/file/1de1a2792fef41919174c1f0388750ca.jpg','60439ed5e0f60f618c3ff1774540ea42',0,1);
 /*!40000 ALTER TABLE `sys_file` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -337,7 +337,7 @@ CREATE TABLE `sys_user` (
 
 LOCK TABLES `sys_user` WRITE;
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-INSERT INTO `sys_user` VALUES (1,'admin','123456','admin','admin@qq.com','18240589365','广州应用科技学院','2024-10-19 13:47:05','http://localhost:9090/file/c707313cb33744b181b80fc962ec77ff.jpg','ROLE_ADMIN'),(2,'user','123456','user','2265334234@qq.com','15837746295','北京','2024-10-22 08:14:35',NULL,'ROLE_USER1'),(3,'哈哈','123456','哈哈','2327900989@qq.com','15219222126','广州应用科技学院','2024-12-02 11:06:14',NULL,'ROLE_USER2'),(4,'李四','123456','李四','4326774837@qq.com','15936657824','上海','2024-10-22 08:22:22',NULL,'ROLE_USER3'),(5,'王五','123456','王五','3246557649@qq.com','18639735674','浙江','2024-11-22 08:26:11',NULL,'ROLE_USER4'),(6,'孙一','123456','孙一','2266554476@qq.com','18764976964','河北','2024-11-22 08:43:20',NULL,'ROLE_USER5');
+INSERT INTO `sys_user` VALUES (1,'admin','123456','admin','admin@qq.com','18240589365','广州应用科技学院','2024-10-19 13:47:05','http://localhost:9090/file/c707313cb33744b181b80fc962ec77ff.jpg','ROLE_ADMIN'),(2,'张三三','123456','张三三','2265334234@qq.com','15837746295','北京','2024-10-22 08:14:35',NULL,'ROLE_USER1'),(3,'哈哈哈','123456','哈哈哈','2327900989@qq.com','15219222126','广州应用科技学院','2024-12-02 11:06:14',NULL,'ROLE_USER2'),(4,'李四四','123456','李四四','4326774837@qq.com','15936657824','广州','2024-10-22 08:22:22',NULL,'ROLE_USER3'),(5,'王五五','123456','王五五','3246557649@qq.com','18639735674','浙江','2024-11-22 08:26:11',NULL,'ROLE_USER4'),(6,'孙一一','123456','孙一一','2266554476@qq.com','18764976964','河北','2024-11-22 08:43:20',NULL,'ROLE_USER5');
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -350,4 +350,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-02 20:17:19
+-- Dump completed on 2024-12-07 14:01:10
