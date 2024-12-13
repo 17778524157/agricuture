@@ -10,13 +10,13 @@ Springboot农业管理系统
 
 #### 安装教程
 
-前端可以使用vue，也可以使用nginx里面的nginx.exe启动
+前端可以使用vue，也可以使用nginx里面的nginx.exe启动，不能放中文目录
 后端是Springboot文件夹，直接导入，记得改数据库密码
 
 #### 使用说明
 
 ![输入图片说明](image.png)
-![输入图片说明](image.png)
+
 
 #### 参与贡献
 
