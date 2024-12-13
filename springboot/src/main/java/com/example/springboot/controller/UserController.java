@@ -85,7 +85,6 @@ public class UserController {
     }
     /**
      * 修改密码
-     *
      * @param userPasswordDTO
      * @return
      */
@@ -96,7 +95,7 @@ public class UserController {
     }
 
     @AuthAccess
-    @PutMapping("/reset")
+    @PutMapping("/reset")//重置用户密码
     public Result reset(@RequestBody UserPasswordDTO userPasswordDTO) {
         if (StrUtil.isBlank(userPasswordDTO.getUsername()) || StrUtil.isBlank(userPasswordDTO.getPhone())) {
             throw new ServiceException("-1", "参数异常");
@@ -113,34 +112,37 @@ public class UserController {
         return Result.success();
     }
 
+/*
+* 根据id删除单个用户
+* */
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable Integer id) {
         return Result.success(userService.removeById(id));
     }
 
-    @PostMapping("/del/batch")
+    @PostMapping("/del/batch")//批量删除用户
     public Result deleteBatch(@RequestBody List<Integer> ids) {
         return Result.success(userService.removeByIds(ids));
     }
 
-    @GetMapping
+    @GetMapping//获取所有用户
     public Result findAll() {
         return Result.success(userService.list());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")//id来获取用户信息
     public Result findOne(@PathVariable Integer id) {
         return Result.success(userService.getById(id));
     }
 
-    @GetMapping("/username/{username}")
+    @GetMapping("/username/{username}")//根据用户名获取用户信息
     public Result findByUsername(@PathVariable String username) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username);
         return Result.success(userService.getOne(queryWrapper));
     }
 
-    @GetMapping("/page")
+    @GetMapping("/page")//分页查询用户信息
     public Result findPage(@RequestParam Integer pageNum,
                            @RequestParam Integer pageSize,
                            @RequestParam(defaultValue = "") String username,

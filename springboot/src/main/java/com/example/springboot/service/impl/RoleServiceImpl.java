@@ -50,8 +50,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
                 roleMenu.setRoleId(roleId);
                 roleMenu.setMenuId(menu.getPid());
                 roleMenuMapper.insert(roleMenu);
+                // 将父菜单ID添加到menuIdsCopy数组中，以避免重复插入。
                 menuIdsCopy.add(menu.getPid());
             }
+            // 为当前角色ID和当前菜单ID创建一个新的RoleMenu对象，并插入数据库
             RoleMenu roleMenu = new RoleMenu();
             roleMenu.setRoleId(roleId);
             roleMenu.setMenuId(menuId);
@@ -61,7 +63,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 
     @Override
     public List<Integer> getRoleMenu(Integer roleId) {
-
+        // 调用roleMenuMapper的selectByRoleId方法，根据角色ID查询并返回所有相关的菜单ID
         return roleMenuMapper.selectByRoleId(roleId);
     }
 

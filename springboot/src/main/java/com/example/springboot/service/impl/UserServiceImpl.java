@@ -32,8 +32,10 @@ import java.util.List;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
+    // 定义一个静态的日志记录器，用于记录日志信息
     private static final Log LOG = Log.get();
 
+    // 使用@Resource注解自动注入。。。。实例
     @Resource
     private UserMapper userMapper;
 
@@ -48,11 +50,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public UserDTO login(UserDTO userDTO) {
+        // 调用自定义的getUserInfo方法，根据用户输入的DTO信息获取User实体
         User one = getUserInfo(userDTO);
         if (one != null) {
+            //使用BeanUtil.copyProperties方法将User实体的属性复制到UserDTO中，true参数表示进行深拷贝（如果属性是对象类型）
             BeanUtil.copyProperties(one, userDTO, true);
-            // 设置token
+            // 生成一个token，通常用于后续的API请求认证。
             String token = TokenUtils.genToken(one.getId().toString(), one.getPassword());
+            // 将生成的token设置到UserDTO中，以便返回给前端
             userDTO.setToken(token);
 
             String role = one.getRole(); // ROLE_ADMIN
@@ -65,8 +70,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
     }
 
+    /**
+     * 注册新用户的方法。
+     *
+     * @param userDTO 包含新用户信息的DTO对象。
+     * @return 如果注册成功，返回保存在数据库中的User对象；如果用户名已存在，则抛出异常。
+     */
     @Override
     public User register(UserDTO userDTO) {
+        // 使用lambda表达式构建查询条件，查询数据库中是否存在具有相同用户名的用户。
         User one = getOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, userDTO.getUsername()));
         if (one == null) {
             one = new User();
@@ -80,6 +92,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return one;
     }
 
+    /**
+     * 更新用户密码的方法。
+     *
+     * @param userPasswordDTO 包含用户ID和新密码的DTO对象。
+     * @throws ServiceException 如果更新失败（例如，用户ID不存在或密码验证失败），则抛出异常。
+     */
     @Override
     public void updatePassword(UserPasswordDTO userPasswordDTO) {
         int update = userMapper.updatePassword(userPasswordDTO);
@@ -88,6 +106,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
     }
 
+    /**
+     * 根据用户DTO中的用户名和密码查询用户信息的方法。
+     *
+     * @param userDTO 包含用户名和密码的DTO对象。
+     * @return 如果查询成功，返回查询到的User对象；如果查询失败（例如，数据库错误），则抛出异常。
+     */
     private User getUserInfo(UserDTO userDTO) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", userDTO.getUsername());
@@ -103,9 +127,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     /**
-     * 获取当前角色的菜单列表
-     * @param roleFlag
-     * @return
+     * 根据角色标识获取该角色对应的菜单列表（包括子菜单）。
+     *
+     * @param roleFlag 角色标识，用于查询对应的角色ID。
+     * @return 返回该角色对应的菜单列表（包括具有该角色访问权限的菜单及其子菜单）。
      */
     private List<Menu> getRoleMenus(String roleFlag) {
         Integer roleId = roleMapper.selectByFlag(roleFlag);
@@ -119,6 +144,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 筛选当前用户角色的菜单
         for (Menu menu : menus) {
             if (menuIds.contains(menu.getId())) {
+                // 如果当前菜单的ID在角色可以访问的菜单ID集合中，则将其添加到roleMenus列表中。
                 roleMenus.add(menu);
             }
             List<Menu> children = menu.getChildren();
