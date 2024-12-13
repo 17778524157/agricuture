@@ -1,1 +1,0 @@
-2024/12/02 21:23:40 [error] 14692#17996: *1 CreateFile() "E:\nginx-1.22.0/html/dist/user" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /user HTTP/1.1", host: "localhost:8080"
