@@ -1,0 +1,16 @@
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\entity\WeatherData.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\entity\FieldAllocation.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\entity\Field.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\service\FieldService.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\FarmServiceApplication.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\service\impl\FieldServiceImpl.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\mapper\StatisticMapper.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\mapper\FieldAllocationMapper.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\service\FieldAllocationService.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\entity\FarmField.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\mapper\FieldMapper.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\service\impl\FieldAllocationServiceImpl.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\mapper\FarmFieldMapper.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\entity\Statistic.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\mapper\WeatherDataMapper.java
+D:\000\agricuture_suanzao\microservices\agriculture-service\farm-service\src\main\java\com\agriculture\farm\controller\FieldController.java

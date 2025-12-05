@@ -1,0 +1,12 @@
+# 公共模块默认配置
+# MinIO配置
+minio:
+  endpoint: http://192.168.10.128:9000
+  access-key: admin
+  secret-key: 12345678
+  bucket-name: agriculture-files
+
+# 日志配置
+logging:
+  level:
+    com.agriculture.common: DEBUG

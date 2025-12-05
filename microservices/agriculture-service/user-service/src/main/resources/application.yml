@@ -1,0 +1,83 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.10.128:8848
+      config:
+        server-addr: 192.168.10.128:8848
+        file-extension: yml
+        import-check:
+          enabled: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.10.128:3306/suanzao?serverTimezone=GMT%2b8&useUnicode=true&characterEncoding=utf8&useSSL=false&useServerPrepStmts=false&cachePrepStmts=false
+    username: root
+    password: 123
+  redis:
+    host: 192.168.10.128
+    port: 6379
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 1
+        time-between-eviction-runs: 10s
+  rabbitmq:
+    host: 192.168.10.128
+    port: 5672
+    username: admin
+    password: 123456
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual  # 手动确认
+        retry:
+          enabled: true  # 启用重试
+          initial-interval: 1000  # 初始重试间隔（毫秒）
+          max-attempts: 3  # 最大重试次数
+          multiplier: 2  # 重试间隔倍数
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/*.xml
+
+# Redisson配置
+redisson:
+  address: redis://192.168.10.128:6379
+  database: 0
+  connection-pool-size: 10
+  connection-minimum-idle-size: 1
+
+
+logging:
+  level:
+    com.agriculture.user: DEBUG
+
+# Elasticsearch配置
+elasticsearch:
+  host: 192.168.10.128
+  port: 9200
+  scheme: http
+
+# Canal配置
+canal:
+  server:
+    host: 192.168.10.128
+    port: 11111
+  destination: example
+  username: canal
+  password: canal
+  batch-size: 1000
+  timeout: 10000
+  sync:
+    enabled: true  # 是否启用Canal到ES同步
+  reconnect:
+    max-attempts: 5  # 最大重连尝试次数
+    interval: 5000  # 重连间隔时间（毫秒）
+

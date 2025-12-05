@@ -1,0 +1,10 @@
+com\agriculture\notification\entity\FarmAlertMessage.class
+com\agriculture\notification\service\impl\NotificationMessageConsumer.class
+com\agriculture\notification\service\impl\NotificationMessageProducer.class
+com\agriculture\notification\controller\FarmAlertController$Result.class
+com\agriculture\notification\service\FarmAlertEmailService.class
+com\agriculture\notification\entity\Notice.class
+com\agriculture\notification\config\RabbitMQConfig.class
+com\agriculture\notification\controller\FarmAlertController.class
+com\agriculture\notification\mq\FarmAlertMessageProducer.class
+com\agriculture\notification\service\EmailService.class

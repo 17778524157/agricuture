@@ -1,0 +1,6 @@
+com\agriculture\gateway\GatewayApplication.class
+com\agriculture\gateway\config\GatewayConfig.class
+com\agriculture\gateway\service\GatewayRedisLoginService.class
+com\agriculture\gateway\filter\AuthGlobalFilter.class
+com\agriculture\gateway\config\CorsConfig.class
+com\agriculture\gateway\config\GatewayRedisConfig.class

@@ -1,0 +1,113 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: ai-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.10.128:8848
+      config:
+        server-addr: 192.168.10.128:8848
+        file-extension: yml
+        import-check:
+          enabled: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.10.128:3306/suanzao?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: 123
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        options:
+          model: deepseek-r1:7b
+          temperature: 0.7
+  # Redis配置
+  redis:
+    host: 192.168.10.128
+    port: 6379
+    #password: 123456
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 1
+        time-between-eviction-runs: 10s
+
+# MyBatis Plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 日志配置
+logging:
+  level:
+    com.agriculture.ai: debug
+
+# SpringDoc配置
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# Redisson配置
+redisson:
+  address: redis://192.168.10.128:6379
+  # password: 123456  # 注释掉密码，因为Redis服务器没有配置密码
+  database: 0
+  connection-pool-size: 10
+  connection-minimum-idle-size: 1
+
+# Seata配置
+# 根据Nacos中的shared-seata.yaml配置进行配置
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+  # 事务组名称，必须与Nacos配置中的tx-service-group一致
+  # Nacos配置中为：hmall
+  tx-service-group: hmall
+  # 配置中心类型：nacos/file
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${spring.cloud.nacos.config.server-addr}
+      group: DEFAULT_GROUP  # 与Nacos配置中的Group一致
+      namespace: ""  # 与Nacos配置中的namespace一致
+      data-id: shared-seata.yaml  # 使用Nacos中的配置Data ID
+      username: nacos  # Nacos配置中有用户名
+      password: nacos  # Nacos配置中有密码
+  # 注册中心类型：nacos/file/eureka/redis/zk/consul/etcd3/sofa
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server  # 与Nacos配置中的application一致
+      server-addr: ${spring.cloud.nacos.discovery.server-addr}
+      group: DEFAULT_GROUP  # 与Nacos配置中的group一致
+      namespace: ""  # 与Nacos配置中的namespace一致
+      username: nacos  # Nacos配置中有用户名
+      password: nacos  # Nacos配置中有密码
+      cluster: default
+  # TC服务器配置
+  service:
+    # 事务组映射：必须与Nacos配置中的vgroup-mapping一致
+    # Nacos配置中为：hmall: "default"
+    vgroup-mapping:
+      hmall: default
+    # 如果无法从注册中心获取服务，使用grouplist直接指定Seata服务器地址
+    grouplist:
+      default: 192.168.10.128:8091
+    enable-degrade: false
+    disable-global-transaction: false
+  # 数据源代理模式：AT（自动事务）
+  data-source-proxy-mode: AT

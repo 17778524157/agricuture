@@ -1,0 +1,91 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: crop-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.10.128:8848
+      config:
+        server-addr: 192.168.10.128:8848
+        file-extension: yml
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.10.128:3306/suanzao?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123
+  redis:
+    host: 192.168.10.128
+    port: 6379
+    # password: 123456  # 注释掉密码，因为Redis服务器没有配置密码
+    database: 0
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 1
+        time-between-eviction-runs: 10s
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+# Redisson配置
+redisson:
+  address: redis://192.168.10.128:6379
+  # password: 123456  # 注释掉密码，因为Redis服务器没有配置密码
+  database: 0
+  connection-pool-size: 10
+  connection-minimum-idle-size: 1
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  type-aliases-package: com.agriculture.crop.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+# Seata配置（与Nacos中的shared-seata.yaml配置保持一致）
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+  tx-service-group: hmall
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${spring.cloud.nacos.config.server-addr}
+      group: DEFAULT_GROUP
+      namespace: ""
+      data-id: shared-seata.yaml
+      username: nacos
+      password: nacos
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: ${spring.cloud.nacos.discovery.server-addr}
+      group: DEFAULT_GROUP
+      namespace: ""
+      username: nacos
+      password: nacos
+      cluster: default
+  service:
+    vgroup-mapping:
+      hmall: default
+    enable-degrade: false
+    disable-global-transaction: false
+  data-source-proxy-mode: AT
+
+logging:
+  level:
+    com.agriculture.crop: debug

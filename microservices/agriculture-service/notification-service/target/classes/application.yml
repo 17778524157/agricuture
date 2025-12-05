@@ -1,0 +1,111 @@
+server:
+  port: 8005
+
+spring:
+  application:
+    name: notification-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.10.128:8848
+      config:
+        server-addr: 192.168.10.128:8848
+        file-extension: yml
+  rabbitmq:
+    host: 192.168.10.128  # RabbitMQ服务器地址
+    port: 5672       # RabbitMQ默认端口
+    username: admin  # 默认用户名
+    password: 123456 # 默认密码
+    virtual-host: /  # 默认虚拟主机
+  mail:
+    host: 192.168.10.128  # 邮件服务器地址
+    port: 25         # SMTP端口
+    username: alert@yourdomain.com  # 发件人邮箱
+    password: 123456  # 发件人密码
+    default-encoding: UTF-8
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: false
+      mail.smtp.timeout: 5000
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.10.128:3306/suanzao?serverTimezone=GMT%2b8&useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: 123
+  # Redis配置
+  redis:
+    host: 192.168.10.128
+    port: 6379
+    #password: 123456
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 1
+        time-between-eviction-runs: 10s
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+# MinIO配置
+minio:
+  endpoint: http://192.168.10.128:9000
+  access-key: admin
+  secret-key: 12345678
+  bucket-name: agriculture-files
+
+# 本地文件存储配置（备用）
+files:
+  upload:
+    path: D:\000\agricuture_suanzao\files
+
+# Redisson配置
+redisson:
+  address: redis://192.168.10.128:6379
+  # password: 123456  # 注释掉密码，因为Redis服务器没有配置密码
+  database: 0
+  connection-pool-size: 10
+  connection-minimum-idle-size: 1
+
+# 禁用邮件健康检查
+management:
+  health:
+    mail:
+      enabled: false
+
+# Seata配置（与Nacos中的shared-seata.yaml配置保持一致）
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+  tx-service-group: hmall
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${spring.cloud.nacos.config.server-addr}
+      group: DEFAULT_GROUP
+      namespace: ""
+      data-id: shared-seata.yaml
+      username: nacos
+      password: nacos
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: ${spring.cloud.nacos.discovery.server-addr}
+      group: DEFAULT_GROUP
+      namespace: ""
+      username: nacos
+      password: nacos
+      cluster: default
+  service:
+    vgroup-mapping:
+      hmall: default
+    enable-degrade: false
+    disable-global-transaction: false
+  data-source-proxy-mode: AT
+
+logging:
+  level:
+    com.agriculture.notification: DEBUG

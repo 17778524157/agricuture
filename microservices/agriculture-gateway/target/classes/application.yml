@@ -1,0 +1,112 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: agriculture-gateway
+  main:
+    web-application-type: reactive
+  redis:
+    host: 192.168.10.128
+    port: 6379
+    # password: 123456  # 注释掉密码，因为Redis服务器没有配置密码
+    database: 0
+    timeout: 5000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.10.128:8848
+      config:
+        server-addr: 192.168.10.128:8848
+        file-extension: yml
+        import-check:
+          enabled: false
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
+            - Path=/api/role/**
+        - id: menu-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/menu/**
+        - id: farm-service
+          uri: lb://farm-service
+          predicates:
+            - Path=/api/farm/**
+        - id: ai-service
+          uri: lb://ai-service
+          predicates:
+            - Path=/api/ai/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notification/**
+            - Path=/api/notice/**
+            - Path=/api/avatar/**
+        - id: file-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/file/**
+        - id: mall-service
+          uri: lb://mall-service
+          predicates:
+            - Path=/api/mall/**
+        - id: crop-service
+          uri: lb://crop-service
+          predicates:
+            - Path=/api/crop/**
+        - id: field-service
+          uri: lb://field-service
+          predicates:
+            - Path=/api/field/**
+        - id: pest-service
+          uri: lb://pest-service
+          predicates:
+            - Path=/api/pest/**
+        - id: weather-service
+          uri: lb://weather-service
+          predicates:
+            - Path=/api/weather/**
+        - id: python-backend
+          uri: http://localhost:8000
+          predicates:
+            - Path=/api/diagnose/**
+            - Path=/api/diagnosis-history/**
+            - Path=/api/ws/video/**
+        # 单体应用路由规则（保留必要的路由）
+        - id: monolith-app
+          uri: http://localhost:9090
+          predicates:
+            - Path=/api/statistic/**
+            - Path=/api/imserver/**
+        
+        # 文件上传路由规则
+        - id: file-upload-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/file/**
+
+# MinIO配置
+minio:
+  endpoint: http://192.168.10.128:9000
+  access-key: admin
+  secret-key: 12345678
+  bucket-name: agriculture-files
+
+logging:
+  level:
+    com.agriculture.gateway: DEBUG
+    org.springframework.cloud.gateway: DEBUG

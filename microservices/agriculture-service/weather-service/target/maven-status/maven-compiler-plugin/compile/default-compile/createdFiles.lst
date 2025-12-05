@@ -1,0 +1,11 @@
+com\agriculture\weather\service\impl\WeatherServiceImpl.class
+com\agriculture\weather\config\MyBatisPlusConfig.class
+com\agriculture\weather\config\SwaggerConfig.class
+com\agriculture\weather\service\IWeatherDataService.class
+com\agriculture\weather\controller\WeatherController.class
+com\agriculture\weather\entity\WeatherData.class
+com\agriculture\weather\mapper\WeatherDataMapper.class
+com\agriculture\weather\WeatherServiceApplication.class
+com\agriculture\weather\exception\GlobalExceptionHandler.class
+com\agriculture\weather\exception\BusinessException.class
+com\agriculture\weather\common\Response.class
