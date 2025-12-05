@@ -1,102 +1,219 @@
 <template>
-  <div>
-    <div style="margin: 10px 0">
-      <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="product"></el-input>
-      <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
-      <el-button type="warning" @click="reset">重置</el-button>
+  <div class="sales-container">
+    <!-- 页面标题 -->
+    <div class="page-header">
+      <h2 class="page-title">销售管理</h2>
+      <p class="page-subtitle">管理销售订单和客户信息</p>
     </div>
 
-    <div style="margin: 10px 0">
-      <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
-      <el-popconfirm
-          class="ml-5"
-          confirm-button-text='确定'
-          cancel-button-text='我再想想'
-          icon="el-icon-info"
-          icon-color="red"
-          title="您确定批量删除这些数据吗？"
-          @confirm="delBatch"
-      >
-        <el-button type="danger" slot="reference">批量删除 <i class="el-icon-remove-outline"></i></el-button>
-      </el-popconfirm>
-    <el-upload action="http://localhost:9090/sales/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
-        <el-button type="primary" class="ml-5">导入 <i class="el-icon-bottom"></i></el-button>
-      </el-upload>
-      <el-button type="primary" @click="exp" class="ml-5">导出 <i class="el-icon-top"></i></el-button>
-    </div>
+    <!-- 搜索和操作区域 -->
+    <el-card class="operation-card" shadow="hover">
+      <div class="search-section">
+        <el-input
+          v-model="product"
+          placeholder="请输入产品名称搜索"
+          class="search-input"
+          prefix-icon="el-icon-search"
+          clearable
+          @keyup.enter.native="load"
+        >
+          <el-button slot="append" icon="el-icon-search" @click="load">搜索</el-button>
+        </el-input>
+        <el-button type="warning" icon="el-icon-refresh" @click="reset">重置</el-button>
+      </div>
 
-    <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"  @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="id" label="ID" width="80" sortable></el-table-column>
-      <el-table-column prop="product" label="产品"></el-table-column>
-      <el-table-column prop="price" label="价格（元）"></el-table-column>
-      <el-table-column prop="number" label="采购数量"></el-table-column>
-      <el-table-column prop="buyer" label="采购商"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
-      <el-table-column prop="phone" label="电话"></el-table-column>
-      <el-table-column prop="shipper" label="出货人"></el-table-column>
-      <el-table-column prop="remark" label="备注"></el-table-column>
-
-      <el-table-column label="操作"  width="180" align="center">
-        <template slot-scope="scope">
-          <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
+      <div class="operation-section">
+        <el-button-group class="operation-group">
+          <el-button type="primary" icon="el-icon-plus" @click="handleAdd">新增销售</el-button>
           <el-popconfirm
-              class="ml-5"
-              confirm-button-text='确定'
-              cancel-button-text='我再想想'
-              icon="el-icon-info"
-              icon-color="red"
-              title="您确定删除吗？"
-              @confirm="del(scope.row.id)"
+            confirm-button-text='确定'
+            cancel-button-text='取消'
+            icon="el-icon-warning"
+            icon-color="red"
+            title="确定要批量删除选中的销售记录吗？"
+            @confirm="delBatch"
           >
-            <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i></el-button>
+            <el-button type="danger" icon="el-icon-delete" slot="reference" :disabled="!multipleSelection.length">
+              批量删除
+            </el-button>
           </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div style="padding: 10px 0">
-      <el-pagination
+        </el-button-group>
+
+        <el-button-group class="operation-group">
+          <el-upload
+            action="http://localhost:8080/api/sales/import"
+            :show-file-list="false"
+            accept=".xlsx"
+            :on-success="handleExcelImportSuccess"
+            :before-upload="beforeExcelUpload"
+          >
+            <el-button type="success" icon="el-icon-upload2">导入数据</el-button>
+          </el-upload>
+          <el-button type="info" icon="el-icon-download" @click="exp">导出数据</el-button>
+        </el-button-group>
+      </div>
+    </el-card>
+
+    <!-- 数据表格区域 -->
+    <el-card class="table-card" shadow="hover">
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        v-loading="loading"
+        element-loading-text="加载中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(255, 255, 255, 0.8)"
+        :header-cell-class-name="'table-header'"
+        @selection-change="handleSelectionChange"
+        class="data-table"
+      >
+        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column prop="id" label="ID" width="80" sortable align="center"></el-table-column>
+        <el-table-column prop="product" label="产品" min-width="120" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="price" label="价格（元）" width="120" align="right">
+          <template slot-scope="scope">
+            <span class="price-cell">¥{{ scope.row.price }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="number" label="销售数量" width="120" align="center"></el-table-column>
+        <el-table-column prop="buyer" label="采购商" min-width="120" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="address" label="地址" min-width="180" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="phone" label="电话" width="140" align="center"></el-table-column>
+        <el-table-column prop="shipper" label="出货人" width="120" align="center"></el-table-column>
+        <el-table-column prop="remark" label="备注" min-width="150" show-overflow-tooltip></el-table-column>
+
+        <el-table-column label="操作" width="180" align="center" fixed="right">
+          <template slot-scope="scope">
+            <el-button-group>
+              <el-button
+                type="primary"
+                icon="el-icon-edit"
+                size="mini"
+                @click="handleEdit(scope.row)"
+                title="编辑"
+              ></el-button>
+              <el-popconfirm
+                confirm-button-text='确定'
+                cancel-button-text='取消'
+                icon="el-icon-warning"
+                icon-color="red"
+                title="确定要删除这条销售记录吗？"
+                @confirm="del(scope.row.id)"
+              >
+                <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  size="mini"
+                  slot="reference"
+                  title="删除"
+                ></el-button>
+              </el-popconfirm>
+            </el-button-group>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 分页器 -->
+      <div class="pagination-container">
+        <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="pageNum"
-          :page-sizes="[2, 5, 10, 20]"
+          :page-sizes="[10, 20, 50, 100]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
-      </el-pagination>
-    </div>
+          :total="total"
+          background
+        >
+        </el-pagination>
+      </div>
+    </el-card>
 
-    <el-dialog title="信息" :visible.sync="dialogFormVisible" width="40%" :close-on-click-modal="false">
-      <el-form label-width="120px" size="small" style="width: 80%; margin: 0 auto">
-        <el-form-item label="产品">
-          <el-input v-model="form.product" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="价格（元）">
-          <el-input v-model="form.price" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="采购数量">
-          <el-input v-model="form.number" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="采购商">
-          <el-input v-model="form.buyer" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="form.address" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="电话">
-          <el-input v-model="form.phone" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="出货人">
-          <el-input v-model="form.shipper" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="form.remark" autocomplete="off"></el-input>
+    <!-- 编辑对话框 -->
+    <el-dialog
+      :title="form.id ? '编辑销售信息' : '新增销售信息'"
+      :visible.sync="dialogFormVisible"
+      width="600px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      class="sales-dialog"
+    >
+      <el-form
+        :model="form"
+        :rules="rules"
+        ref="form"
+        label-width="100px"
+        size="small"
+        class="sales-form"
+      >
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="产品" prop="product">
+              <el-input v-model="form.product" placeholder="请输入产品名称"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="价格" prop="price">
+              <el-input-number
+                v-model="form.price"
+                :precision="2"
+                :step="0.1"
+                :min="0"
+                controls-position="right"
+                style="width: 100%"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="销售数量" prop="number">
+              <el-input-number
+                v-model="form.number"
+                :min="1"
+                controls-position="right"
+                style="width: 100%"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="采购商" prop="buyer">
+              <el-input v-model="form.buyer" placeholder="请输入采购商名称"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-form-item label="地址" prop="address">
+          <el-input v-model="form.address" placeholder="请输入详细地址"></el-input>
         </el-form-item>
 
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="电话" prop="phone">
+              <el-input v-model="form.phone" placeholder="请输入联系电话"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="出货人" prop="shipper">
+              <el-input v-model="form.shipper" placeholder="请输入出货人姓名"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-form-item label="备注" prop="remark">
+          <el-input
+            type="textarea"
+            v-model="form.remark"
+            :rows="3"
+            placeholder="请输入备注信息"
+          ></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
+        <el-button type="primary" @click="save" :loading="saveLoading">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -106,16 +223,55 @@
 export default {
   name: "Sales",
   data() {
+    // 手机号验证规则
+    const validatePhone = (rule, value, callback) => {
+      const phoneRegex = /^1[3-9]\d{9}$/;
+      if (value && !phoneRegex.test(value)) {
+        callback(new Error('请输入有效的手机号码'));
+      } else {
+        callback();
+      }
+    };
+
     return {
       tableData: [],
       total: 0,
       pageNum: 1,
       pageSize: 10,
-      product:"",
+      product: "",
       form: {},
       dialogFormVisible: false,
       multipleSelection: [],
-      user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+      loading: false,
+      saveLoading: false,
+      user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+      rules: {
+        product: [
+          { required: true, message: '请输入产品名称', trigger: 'blur' },
+          { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+        ],
+        price: [
+          { required: true, message: '请输入价格', trigger: 'blur' },
+          { type: 'number', message: '价格必须为数字', trigger: 'blur' }
+        ],
+        number: [
+          { required: true, message: '请输入销售数量', trigger: 'blur' },
+          { type: 'number', message: '数量必须为数字', trigger: 'blur' }
+        ],
+        buyer: [
+          { required: true, message: '请输入采购商名称', trigger: 'blur' }
+        ],
+        address: [
+          { required: true, message: '请输入地址', trigger: 'blur' }
+        ],
+        phone: [
+          { required: true, message: '请输入联系电话', trigger: 'blur' },
+          { validator: validatePhone, trigger: 'blur' }
+        ],
+        shipper: [
+          { required: true, message: '请输入出货人姓名', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
@@ -123,119 +279,348 @@ export default {
   },
   methods: {
     load() {
+      this.loading = true;
       this.request.get("/sales/page", {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          product:this.product,
+          product: this.product,
         }
       }).then(res => {
-        this.tableData = res.data.records
-        this.total = res.data.total
-      })
+        this.tableData = res.data.records;
+        this.total = res.data.total;
+      }).finally(() => {
+        this.loading = false;
+      });
     },
     save() {
-      this.request.post("/sales", this.form).then(res => {
-        if (res.code === '200') {
-          this.$message.success("保存成功")
-          this.dialogFormVisible = false
-          this.load()
-        } else {
-          this.$message.error("保存失败")
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          this.saveLoading = true;
+          this.request.post("/sales", this.form).then(res => {
+            if (res.code === '200') {
+              this.$message({
+                message: this.form.id ? "更新成功" : "添加成功",
+                type: "success",
+                duration: 2000
+              });
+              this.dialogFormVisible = false;
+              this.load();
+            } else {
+              this.$message.error(res.msg || "操作失败");
+            }
+          }).finally(() => {
+            this.saveLoading = false;
+          });
         }
-      })
+      });
     },
     handleAdd() {
-      this.dialogFormVisible = true
-      this.form = {}
+      this.form = {};
+      this.dialogFormVisible = true;
       this.$nextTick(() => {
-        if(this.$refs.img) {
-           this.$refs.img.clearFiles();
-         }
-         if(this.$refs.file) {
-          this.$refs.file.clearFiles();
-         }
-      })
+        this.$refs.form && this.$refs.form.clearValidate();
+      });
     },
     handleEdit(row) {
-      this.form = JSON.parse(JSON.stringify(row))
-      this.dialogFormVisible = true
-       this.$nextTick(() => {
-         if(this.$refs.img) {
-           this.$refs.img.clearFiles();
-         }
-         if(this.$refs.file) {
-          this.$refs.file.clearFiles();
-         }
-       })
+      this.form = JSON.parse(JSON.stringify(row));
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs.form && this.$refs.form.clearValidate();
+      });
     },
     del(id) {
       this.request.delete("/sales/" + id).then(res => {
         if (res.code === '200') {
-          this.$message.success("删除成功")
-          this.load()
+          this.$message({
+            message: "删除成功",
+            type: "success",
+            duration: 2000
+          });
+          this.load();
         } else {
-          this.$message.error("删除失败")
+          this.$message.error(res.msg || "删除失败");
         }
-      })
+      });
     },
     handleSelectionChange(val) {
-      console.log(val)
-      this.multipleSelection = val
+      this.multipleSelection = val;
     },
     delBatch() {
       if (!this.multipleSelection.length) {
-        this.$message.error("请选择需要删除的数据")
-        return
+        this.$message.warning("请选择需要删除的数据");
+        return;
       }
-      let ids = this.multipleSelection.map(v => v.id)  // [{}, {}, {}] => [1,2,3]
+      const ids = this.multipleSelection.map(v => v.id);
       this.request.post("/sales/del/batch", ids).then(res => {
         if (res.code === '200') {
-          this.$message.success("批量删除成功")
-          this.load()
+          this.$message({
+            message: "批量删除成功",
+            type: "success",
+            duration: 2000
+          });
+          this.load();
         } else {
-          this.$message.error("批量删除失败")
+          this.$message.error(res.msg || "批量删除失败");
         }
-      })
+      });
     },
     reset() {
-
-      this.product=""
-      this.load()
+      this.product = "";
+      this.load();
     },
     handleSizeChange(pageSize) {
-      console.log(pageSize)
-      this.pageSize = pageSize
-      this.load()
+      this.pageSize = pageSize;
+      this.load();
     },
     handleCurrentChange(pageNum) {
-      console.log(pageNum)
-      this.pageNum = pageNum
-      this.load()
-    },
-    handleFileUploadSuccess(res) {
-      this.form.file = res
-    },
-    handleImgUploadSuccess(res) {
-      this.form.img = res
-    },
-    download(url) {
-      window.open(url)
+      this.pageNum = pageNum;
+      this.load();
     },
     exp() {
-      window.open("http://localhost:9090/sales/export")
+      window.open("http://localhost:8080/api/sales/export");
     },
     handleExcelImportSuccess() {
-      this.$message.success("导入成功")
-      this.load()
+      this.$message({
+        message: "数据导入成功",
+        type: "success",
+        duration: 2000
+      });
+      this.load();
+    },
+    beforeExcelUpload(file) {
+      const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isExcel) {
+        this.$message.error('只能上传 Excel 文件!');
+        return false;
+      }
+      if (!isLt2M) {
+        this.$message.error('文件大小不能超过 2MB!');
+        return false;
+      }
+      return true;
     }
   }
 }
 </script>
 
+<style scoped>
+.sales-container {
+  padding: 20px;
+  background: #f5f7fa;
+  min-height: 100vh;
+}
 
-<style>
-.headerBg {
-  background: #eee!important;
+.page-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.page-title {
+  font-size: 28px;
+  color: #303133;
+  margin: 0;
+  font-weight: 600;
+}
+
+.page-subtitle {
+  font-size: 16px;
+  color: #909399;
+  margin: 10px 0 0;
+}
+
+.operation-card {
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.search-section {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 300px;
+}
+
+.operation-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.operation-group {
+  display: flex;
+  gap: 10px;
+}
+
+.table-card {
+  border-radius: 8px;
+}
+
+.data-table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.table-header {
+  background-color: #f5f7fa !important;
+  color: #606266;
+  font-weight: 600;
+}
+
+.price-cell {
+  color: #67c23a;
+  font-weight: 500;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.sales-dialog {
+  border-radius: 8px;
+}
+
+.sales-form {
+  padding: 20px;
+}
+
+.dialog-footer {
+  text-align: right;
+  padding: 20px;
+  border-top: 1px solid #ebeef5;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .sales-container {
+    padding: 10px;
+  }
+
+  .search-section {
+    flex-direction: column;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .operation-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .operation-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .el-button-group {
+    display: flex;
+    width: 100%;
+  }
+
+  .el-button-group .el-button {
+    flex: 1;
+  }
+}
+
+/* 动画效果 */
+.el-button {
+  transition: all 0.3s ease;
+}
+
+.el-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+}
+
+.el-card {
+  transition: all 0.3s ease;
+}
+
+.el-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* 表格行悬浮效果 */
+.data-table .el-table__row {
+  transition: all 0.3s ease;
+}
+
+.data-table .el-table__row:hover {
+  background-color: #f5f7fa !important;
+  transform: scale(1.01);
+}
+
+/* 输入框焦点效果 */
+.el-input__inner:focus {
+  border-color: #409EFF;
+  box-shadow: 0 0 0 2px rgba(64,158,255,.2);
+}
+
+/* 按钮组样式优化 */
+.el-button-group .el-button {
+  margin: 0;
+}
+
+.el-button-group .el-button:not(:last-child) {
+  margin-right: -1px;
+}
+
+/* 分页器样式优化 */
+.el-pagination {
+  padding: 20px 0;
+  text-align: center;
+}
+
+.el-pagination .el-pagination__total,
+.el-pagination .el-pagination__jump {
+  margin-right: 16px;
+}
+
+.el-pagination .el-pagination__sizes {
+  margin-right: 16px;
+}
+
+/* 对话框样式优化 */
+.el-dialog__header {
+  padding: 20px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.el-dialog__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.el-dialog__body {
+  padding: 30px 20px;
+}
+
+/* 表单样式优化 */
+.el-form-item__label {
+  font-weight: 500;
+}
+
+.el-input-number .el-input__inner {
+  text-align: left;
+}
+
+/* 表格内容过长显示省略号 */
+.el-table .cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

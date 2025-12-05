@@ -1,1 +1,9 @@
 2024/12/02 21:23:40 [error] 14692#17996: *1 CreateFile() "E:\nginx-1.22.0/html/dist/user" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /user HTTP/1.1", host: "localhost:8080"
+2025/05/02 11:21:16 [emerg] 20212#37588: CreateDirectory() "D:\000\agricuture_suanzao\nginx-1.22.0/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2025/05/14 11:06:34 [emerg] 39440#18176: CreateDirectory() "D:\000\agricuture_suanzao\nginx-1.22.0/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2025/05/14 11:07:12 [emerg] 47568#23324: CreateDirectory() "D:\000\agricuture_suanzao\nginx-1.22.0/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2025/05/14 11:07:33 [emerg] 42900#18812: CreateDirectory() "D:\000\agricuture_suanzao\nginx-1.22.0/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2025/05/14 11:09:10 [emerg] 46588#48972: bind() to 0.0.0.0:8080 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2025/05/14 11:09:41 [emerg] 45684#13364: bind() to 0.0.0.0:8080 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2025/10/09 11:46:09 [emerg] 29976#17832: invalid number of arguments in "alias" directive in D:\000\agricuture_suanzao\nginx-1.22.0/conf/nginx.conf:59
+2025/10/09 11:46:32 [emerg] 7508#29336: bind() to 0.0.0.0:8080 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)

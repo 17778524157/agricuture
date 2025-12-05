@@ -4,6 +4,7 @@
       <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="farm"></el-input>
       <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
+      <el-button type="info" @click="goToMap">查看地图</el-button>
     </div>
 
     <div style="margin: 10px 0">
@@ -134,15 +135,31 @@ export default {
   },
   methods: {
     load() {
-      this.request.get("/statistic/page", {
-        params: {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-          farm: this.farm,
+      this.loading = true
+      // 使用farm-service的fields接口替代不可用的statistic/page接口
+      // 不传递userId参数，因为数据库中没有该字段
+      this.request.get("/api/farm/fields").then(res => {
+        console.log("获取农田数据成功:", res)
+        if (res && Array.isArray(res)) {
+          // 转换数据格式以适配表格
+          this.tableData = res.map(field => ({
+            id: field.id,
+            farm: field.name,
+            area: field.area, // 直接使用area字段
+            address: `经度: ${field.longitude}, 纬度: ${field.latitude}`, // 使用经纬度组合地址
+            keeper: field.manager || '未知', // 使用manager字段
+            crop: field.crop, // 直接使用crop字段
+            state: field.status
+          }))
+          this.total = res.length
+          this.$message.success("获取数据成功")
+        } else {
+          console.warn("返回数据格式不符合预期", res)
+          this.$message.warning("数据格式异常")
         }
-      }).then(res => {
-        this.tableData = res.data.records
-        this.total = res.data.total
+      }).catch(err => {
+        console.error("获取农田数据失败:", err)
+        this.$message.error("获取数据失败: " + (err.message || '未知错误'))
       })
     },
     save() {
@@ -233,11 +250,14 @@ export default {
       window.open(url)
     },
     exp() {
-      window.open("http://localhost:9090/statistic/export")
+      window.open("http://localhost:8080/api/statistic/export")
     },
     handleExcelImportSuccess() {
       this.$message.success("导入成功")
       this.load()
+    },
+    goToMap() {
+      this.$router.push('/map');
     }
   }
 }

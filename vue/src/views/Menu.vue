@@ -108,28 +108,70 @@ export default {
   },
   methods: {
     load() {
-      this.request.get("/menu", {
+      this.request.get("/api/menu", {
         params: {
           name: this.name,
         }
       }).then(res => {
-        this.tableData = res.data
+        console.log('菜单API返回数据:', res)
+        
+        // 处理微服务返回的Result格式
+        let menuData = null
+        if (res && res.code === '200' && res.data && Array.isArray(res.data)) {
+          menuData = res.data
+        } else if (res && Array.isArray(res)) {
+          menuData = res
+        } else if (res && res.data && Array.isArray(res.data)) {
+          menuData = res.data
+        }
+        
+        if (menuData && menuData.length > 0) {
+          this.tableData = menuData
+          this.$message.success(`成功获取${menuData.length}个菜单`)
+        } else {
+          this.tableData = []
+          this.$message.info('暂无菜单数据')
+        }
+      }).catch(err => {
+        console.error('获取菜单数据失败:', err)
+        this.tableData = []
+        this.$message.warning('获取菜单数据失败，请检查服务连接')
       })
 
-      // 请求图标的数据
-      this.request.get("/menu/icons").then(res => {
-        this.options = res.data
-      })
+      // 请求图标的数据（暂时使用备用数据）
+      this.options = [
+        { value: 'el-icon-s-home', label: '首页' },
+        { value: 'el-icon-user', label: '用户' },
+        { value: 'el-icon-s-custom', label: '角色' },
+        { value: 'el-icon-menu', label: '菜单' },
+        { value: 'el-icon-s-goods', label: '商品' },
+        { value: 'el-icon-s-marketing', label: '营销' },
+        { value: 'el-icon-shopping-cart-2', label: '购物车' },
+        { value: 'el-icon-s-data', label: '数据' },
+        { value: 'el-icon-s-tools', label: '工具' },
+        { value: 'el-icon-setting', label: '设置' }
+      ]
     },
     save() {
-      this.request.post("/menu", this.form).then(res => {
-        if (res.code === '200') {
+      // 根据是否有ID判断是新增还是编辑
+      const apiUrl = "/api/menu"
+      const method = this.form.id ? 'put' : 'post'
+      
+      console.log('保存菜单数据:', this.form)
+      console.log('API方法:', method)
+      
+      this.request[method](apiUrl, this.form).then(res => {
+        console.log('保存响应:', res)
+        if (res && res.code === '200') {
           this.$message.success("保存成功")
           this.dialogFormVisible = false
           this.load()
         } else {
-          this.$message.error("保存失败")
+          this.$message.error("保存失败：" + (res.message || '未知错误'))
         }
+      }).catch(err => {
+        console.error('保存菜单失败:', err)
+        this.$message.error("保存失败：" + (err.message || '未知错误'))
       })
     },
     handleAdd(pid) {
@@ -144,13 +186,17 @@ export default {
       this.dialogFormVisible = true
     },
     del(id) {
-      this.request.delete("/menu/" + id).then(res => {
-        if (res.code === '200') {
+      this.request.delete("/api/menu/" + id).then(res => {
+        console.log('删除响应:', res)
+        if (res && res.code === '200') {
           this.$message.success("删除成功")
           this.load()
         } else {
-          this.$message.error("删除失败")
+          this.$message.error("删除失败：" + (res.message || '未知错误'))
         }
+      }).catch(err => {
+        console.error('删除菜单失败:', err)
+        this.$message.error("删除失败：" + (err.message || '未知错误'))
       })
     },
     handleSelectionChange(val) {
@@ -159,13 +205,31 @@ export default {
     },
     delBatch() {
       let ids = this.multipleSelection.map(v => v.id)  // [{}, {}, {}] => [1,2,3]
-      this.request.post("/menu/del/batch", ids).then(res => {
-        if (res.code === '200') {
-          this.$message.success("批量删除成功")
-          this.load()
-        } else {
-          this.$message.error("批量删除失败")
-        }
+      
+      // 微服务暂时不支持批量删除，改为逐个删除
+      if (ids.length === 0) {
+        this.$message.warning('请选择要删除的菜单')
+        return
+      }
+      
+      let deleteCount = 0
+      let totalCount = ids.length
+      
+      ids.forEach(id => {
+        this.request.delete("/api/menu/" + id).then(res => {
+          deleteCount++
+          if (res && res.code === '200') {
+            if (deleteCount === totalCount) {
+              this.$message.success("批量删除成功")
+              this.load()
+            }
+          } else {
+            this.$message.error(`删除菜单ID ${id} 失败`)
+          }
+        }).catch(err => {
+          deleteCount++
+          this.$message.error(`删除菜单ID ${id} 失败：${err.message}`)
+        })
       })
     },
     reset() {
@@ -183,7 +247,7 @@ export default {
       this.load()
     },
     exp() {
-      window.open("http://localhost:9090/role/export")
+      window.open("http://localhost:8080/api/role/export")
     },
     handleExcelImportSuccess() {
       this.$message.success("导入成功")

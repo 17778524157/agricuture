@@ -10,8 +10,9 @@
     </div>
     <el-dropdown style="width: 150px; cursor: pointer; font-size: 1.3em; text-align: right">
       <div style="display: inline-block">
-        <img :src="user.avatarUrl" alt=""
-             style="width: 30px; border-radius: 50%; position: relative; top: 10px; right: 5px">
+        <img :src="getAvatarUrl(user.avatarUrl)" alt=""
+             style="width: 30px; border-radius: 50%; position: relative; top: 10px; right: 5px"
+             @error="handleAvatarError">
         <span>{{ user.nickname }}</span><i class="el-icon-arrow-down" style="margin-left: 5px"></i>
       </div>
       <el-dropdown-menu slot="dropdown" style="width: 100px; text-align: center">
@@ -54,6 +55,31 @@ export default {
     logout() {
       this.$store.commit("logout")
       this.$message.success("退出成功")
+    },
+    
+    // 获取头像URL
+    getAvatarUrl(avatarUrl) {
+      if (!avatarUrl) return ''
+      
+      // 如果已经是完整的URL，直接返回
+      if (avatarUrl.startsWith('http')) {
+        return avatarUrl
+      }
+      
+      // 如果是相对路径，添加域名
+      if (avatarUrl.startsWith('/')) {
+        return window.location.origin + avatarUrl
+      }
+      
+      // 其他情况直接返回
+      return avatarUrl
+    },
+    
+    // 处理头像加载错误
+    handleAvatarError(event) {
+      console.error('头像加载失败:', event.target.src)
+      // 设置默认头像或隐藏图片
+      event.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTUiIGZpbGw9IiNEOUQ5RDkiLz4KPHBhdGggZD0iTTE1IDEwQzE3LjIwOTEgMTAgMTkgMTEuNzkwOSAxOSAxNEMxOSAxNi4yMDkxIDE3LjIwOTEgMTggMTUgMThDMTIuNzkwOSAxOCAxMSAxNi4yMDkxIDExIDE0QzExIDExLjc5MDkgMTIuNzkwOSAxMCAxNSAxMFoiIGZpbGw9IiM5OTk5OTkiLz4KPHBhdGggZD0iTTE1IDIwQzEwLjU4MTcgMjAgNyAyMi41ODE3IDcgMjciIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+'
     }
   }
 }

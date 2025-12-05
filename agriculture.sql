@@ -68,7 +68,7 @@ CREATE TABLE `notice` (
 
 LOCK TABLES `notice` WRITE;
 /*!40000 ALTER TABLE `notice` DISABLE KEYS */;
-INSERT INTO `notice` VALUES (10,'开启智慧农业元年','日前，农业农村部印发《全国智慧农业行动计划（2024—2028年）》（以下简称《行动计划》），提出在公共服务能力建设上，加快打造国家农业农村大数据平台、农业农村用地“一张图”和基础模型算法等公共服务产品；在产业布局上，着力推动主要作物大面积单产提升，培育一批智慧农场、智慧牧场、智慧渔场，推进全产业链数字化改造；在示范带动上，支持浙江先行先试，探索推广“伏羲农场”等未来应用场景。　　','2024-11-30 00:00:00','admin','http://localhost:9090/file/1de1a2792fef41919174c1f0388750ca.jpg');
+INSERT INTO `notice` VALUES (10,'开启智慧农业元年','日前，农业农村部印发《全国智慧农业行动计划（2024—2028年）》（以下简称《行动计划》），提出在公共服务能力建设上，加快打造国家农业农村大数据平台、农业农村用地"一张图"和基础模型算法等公共服务产品；在产业布局上，着力推动主要作物大面积单产提升，培育一批智慧农场、智慧牧场、智慧渔场，推进全产业链数字化改造；在示范带动上，支持浙江先行先试，探索推广"伏羲农场"等未来应用场景。　　','2024-11-30 00:00:00','admin','http://localhost:9090/file/1de1a2792fef41919174c1f0388750ca.jpg');
 /*!40000 ALTER TABLE `notice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -255,7 +255,7 @@ CREATE TABLE `sys_menu` (
 
 LOCK TABLES `sys_menu` WRITE;
 /*!40000 ALTER TABLE `sys_menu` DISABLE KEYS */;
-INSERT INTO `sys_menu` VALUES (4,'系统管理',NULL,'el-icon-s-grid',NULL,NULL,NULL,700),(5,'职工管理','/user','el-icon-user',NULL,4,'User',301),(6,'角色管理','/role','el-icon-s-custom',NULL,4,'Role',302),(7,'菜单管理','/menu','el-icon-menu',NULL,4,'Menu',303),(10,'主页','/home','el-icon-house',NULL,NULL,'Home',300),(13,'农资管理','','el-icon-s-goods',NULL,NULL,'',600),(15,'产品出售','/sales','el-icon-s-cooperation',NULL,13,'Sales',2),(21,'农田管理','/farmland','el-icon-menu',NULL,NULL,'Farmland',560),(23,'农资采购','/purchase','el-icon-shopping-cart-full',NULL,13,'Purchase',1),(27,'库存','/inventory','el-icon-house',NULL,13,'Inventory',3),(28,'统计分析','','el-icon-s-data',NULL,NULL,'',550),(29,'农田信息','/statistic','el-icon-data-line',NULL,28,'Statistic',1),(30,'专家咨询','/im','el-icon-s-comment',NULL,28,'Im',2),(39,'公告管理','/notice','el-icon-news',NULL,4,'Notice',300),(40,'环境监测','/dashbord','el-icon-s-marketing',NULL,28,'Dashbord',0);
+INSERT INTO `sys_menu` VALUES (4,'系统管理',NULL,'el-icon-s-grid',NULL,NULL,NULL,700),(5,'职工管理','/user','el-icon-user',NULL,4,'User',301),(6,'角色管理','/role','el-icon-s-custom',NULL,4,'Role',302),(7,'菜单管理','/menu','el-icon-menu',NULL,4,'Menu',303),(10,'主页','/home','el-icon-house',NULL,NULL,'Home',300),(13,'农资管理','','el-icon-s-goods',NULL,NULL,'',600),(15,'产品出售','/sales','el-icon-s-cooperation',NULL,13,'Sales',2),(21,'农田管理','/farmland','el-icon-menu',NULL,NULL,'Farmland',560),(23,'农资采购','/purchase','el-icon-shopping-cart-full',NULL,13,'Purchase',1),(27,'库存','/inventory','el-icon-house',NULL,13,'Inventory',3),(28,'统计分析','','el-icon-s-data',NULL,NULL,'',550),(29,'农田信息','/statistic','el-icon-data-line',NULL,28,'Statistic',1),(30,'专家咨询','/im','el-icon-s-comment',NULL,28,'Im',2),(39,'公告管理','/notice','el-icon-news',NULL,4,'Notice',300),(40,'环境监测','/dashbord','el-icon-s-marketing',NULL,28,'Dashbord',0),(41,'地图可视化','/map','el-icon-map-location','农田地图可视化',28,'MapView',3);
 /*!40000 ALTER TABLE `sys_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -305,7 +305,7 @@ CREATE TABLE `sys_role_menu` (
 
 LOCK TABLES `sys_role_menu` WRITE;
 /*!40000 ALTER TABLE `sys_role_menu` DISABLE KEYS */;
-INSERT INTO `sys_role_menu` VALUES (1,4),(1,5),(1,6),(1,7),(1,10),(1,13),(1,15),(1,21),(1,23),(1,27),(1,28),(1,29),(1,30),(1,39),(1,40),(2,10),(2,21),(2,28),(2,29),(2,30),(2,40),(3,10),(3,13),(3,27),(4,10),(4,13),(4,15),(5,10),(5,13),(5,15),(5,23),(5,27),(6,10),(6,28),(6,29),(6,30),(6,40);
+INSERT INTO `sys_role_menu` VALUES (1,4),(1,5),(1,6),(1,7),(1,10),(1,13),(1,15),(1,21),(1,23),(1,27),(1,28),(1,29),(1,30),(1,39),(1,40),(1,41),(2,10),(2,21),(2,28),(2,29),(2,30),(2,40),(2,41),(3,10),(3,13),(3,27),(4,10),(4,13),(4,15),(5,10),(5,13),(5,15),(5,23),(5,27),(6,10),(6,28),(6,29),(6,30),(6,40),(6,41);
 /*!40000 ALTER TABLE `sys_role_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -340,6 +340,54 @@ LOCK TABLES `sys_user` WRITE;
 INSERT INTO `sys_user` VALUES (1,'admin','123456','admin','admin@qq.com','18240589365','广州应用科技学院','2024-10-19 13:47:05','http://localhost:9090/file/c707313cb33744b181b80fc962ec77ff.jpg','ROLE_ADMIN'),(2,'张三三','123456','张三三','2265334234@qq.com','15837746295','北京','2024-10-22 08:14:35',NULL,'ROLE_USER1'),(3,'哈哈哈','123456','哈哈哈','2327900989@qq.com','15219222126','广州应用科技学院','2024-12-02 11:06:14',NULL,'ROLE_USER2'),(4,'李四四','123456','李四四','4326774837@qq.com','15936657824','广州','2024-10-22 08:22:22',NULL,'ROLE_USER3'),(5,'王五五','123456','王五五','3246557649@qq.com','18639735674','浙江','2024-11-22 08:26:11',NULL,'ROLE_USER4'),(6,'孙一一','123456','孙一一','2266554476@qq.com','18764976964','河北','2024-11-22 08:43:20',NULL,'ROLE_USER5');
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `ai_chat`
+--
+
+DROP TABLE IF EXISTS `ai_chat`;
+CREATE TABLE `ai_chat` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '用户名称',
+  `question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT '用户问题',
+  `answer` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'AI回答',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+--
+-- Table structure for table `field`
+--
+
+DROP TABLE IF EXISTS `field`;
+CREATE TABLE `field` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL COMMENT '农田名称',
+  `latitude` double NOT NULL COMMENT '纬度',
+  `longitude` double NOT NULL COMMENT '经度',
+  `area` double NOT NULL COMMENT '面积（亩）',
+  `crop` varchar(50) NOT NULL COMMENT '作物类型',
+  `plant_date` date NOT NULL COMMENT '种植时间',
+  `harvest_date` date NOT NULL COMMENT '预计收获时间',
+  `manager` varchar(50) NOT NULL COMMENT '负责人',
+  `description` text COMMENT '描述',
+  `status` varchar(20) NOT NULL DEFAULT '种植中' COMMENT '状态',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='农田信息表';
+
+--
+-- Dumping data for table `field`
+--
+
+LOCK TABLES `field` WRITE;
+/*!40000 ALTER TABLE `field` DISABLE KEYS */;
+INSERT INTO `field` (`name`, `latitude`, `longitude`, `area`, `crop`, `plant_date`, `harvest_date`, `manager`, `description`, `status`) VALUES
+('1号农田', 39.9042, 116.4074, 100, '水稻', '2024-03-15', '2024-09-15', '张三三', '优质水稻种植区', '种植中'),
+('2号农田', 39.9142, 116.4174, 150, '小麦', '2024-02-20', '2024-07-20', '张三三', '冬小麦种植区', '种植中'),
+('3号农田', 39.8942, 116.3974, 200, '玉米', '2024-04-01', '2024-10-01', '张三三', '玉米种植示范区', '种植中');
+/*!40000 ALTER TABLE `field` ENABLE KEYS */;
+UNLOCK TABLES;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
