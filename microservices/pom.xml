@@ -10,7 +10,7 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>Agriculture Microservices</name>
-    <description>农业算枣微服务架构项目</description>
+    <description>农业酸枣微服务架构项目</description>
 
     <modules>
         <module>agriculture-common</module>
@@ -48,7 +48,7 @@
         <mysql.version>8.0.28</mysql.version>
         
         <!-- 工具类 -->
-        <lombok.version>1.18.24</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <hutool.version>5.7.20</hutool.version>
         <jwt.version>3.10.3</jwt.version>
         
@@ -83,25 +83,24 @@
             <scope>import</scope>
         </dependency>
         
-        <!-- Seata分布式事务 -->
+        <!-- Seata分布式事务 (JDK 17兼容性问题, 暂不启用)
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
-            <version>2021.1</version>
+            <version>2021.0.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-spring-boot-starter</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+        -->
         
         <!-- Spring Cloud OpenFeign (明确指定版本) -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
             <version>2.2.10.RELEASE</version>
-        </dependency>
-        
-        <!-- Skywalking Agent -->
-        <dependency>
-            <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-toolkit-logback-1.x</artifactId>
-            <version>8.9.0</version>
         </dependency>
             
             <!-- MyBatis Plus -->
@@ -227,6 +226,20 @@
                             <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <argLine>
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                        --add-opens java.base/java.lang.reflect=ALL-UNNAMED
+                        --add-opens java.base/java.text=ALL-UNNAMED
+                        --add-opens java.desktop/java.awt.font=ALL-UNNAMED
+                    </argLine>
                 </configuration>
             </plugin>
         </plugins>

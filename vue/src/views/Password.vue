@@ -52,13 +52,24 @@ export default {
             this.$message.error("2次输入的新密码不相同")
             return false
           }
-          this.request.post("/user/password", this.form).then(res => {
-            if (res.code === '200') {
-              this.$message.success("修改成功")
+          // 【改造】修正为真实接口 PUT /api/user/changePassword（原为 /user/password，网关下不存在）
+          //   字段对齐后端 PasswordChangeRequest：oldPassword/newPassword/confirmPassword
+          this.request.put("/api/user/changePassword", {
+            oldPassword: this.form.password,
+            newPassword: this.form.newPassword,
+            confirmPassword: this.form.confirmPassword
+          }, {
+            headers: { userId: this.user.id }
+          }).then(res => {
+            if (res.code === '200' || res.code === 200) {
+              this.$message.success("修改成功，请重新登录")
               this.$store.commit("logout")
+              this.$router.push("/login")
             } else {
-              this.$message.error(res.msg)
+              this.$message.error(res.message || res.msg)
             }
+          }).catch(() => {
+            this.$message.error("修改密码失败")
           })
         }
       })

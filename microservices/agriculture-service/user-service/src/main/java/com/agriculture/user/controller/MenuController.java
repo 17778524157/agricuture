@@ -3,6 +3,7 @@ package com.agriculture.user.controller;
 import com.agriculture.common.result.Result;
 import com.agriculture.user.entity.Menu;
 import com.agriculture.user.mapper.MenuMapper;
+import com.agriculture.user.service.IMenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -23,16 +24,32 @@ public class MenuController {
     @Autowired
     private MenuMapper menuMapper;
 
+    @Autowired
+    private IMenuService menuService;
+
     @GetMapping
-    @ApiOperation("获取菜单列表")
-    public Result<List<Menu>> getMenus() {
+    @ApiOperation("获取菜单列表（树形结构）")
+    public Result<List<Menu>> getMenus(@RequestParam(required = false) String name) {
         try {
-            log.info("获取菜单列表请求");
-            List<Menu> menus = menuMapper.selectList(null);
+            log.info("获取菜单列表请求，name: {}", name);
+            List<Menu> menus = menuService.findMenus(name);
             log.info("查询到菜单数量: {}", menus != null ? menus.size() : 0);
             return Result.success(menus);
         } catch (Exception e) {
             log.error("获取菜单列表失败: {}", e.getMessage(), e);
+            return Result.fail("获取菜单数据失败：" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/flat")
+    @ApiOperation("获取菜单列表（平铺）")
+    public Result<List<Menu>> getMenusFlat(@RequestParam(required = false) String name) {
+        try {
+            log.info("获取平铺菜单列表请求，name: {}", name);
+            List<Menu> menus = menuMapper.selectList(null);
+            return Result.success(menus);
+        } catch (Exception e) {
+            log.error("获取平铺菜单列表失败: {}", e.getMessage(), e);
             return Result.fail("获取菜单数据失败：" + e.getMessage());
         }
     }

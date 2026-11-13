@@ -1,6 +1,0 @@
-com\agriculture\field\controller\FieldController.class
-com\agriculture\field\entity\Field.class
-com\agriculture\field\service\impl\FieldServiceImpl.class
-com\agriculture\field\FieldServiceApplication.class
-com\agriculture\field\service\IFieldService.class
-com\agriculture\field\mapper\FieldMapper.class

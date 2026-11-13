@@ -179,7 +179,6 @@ public class CacheManagementController {
         try {
             // 停止现有服务
             canalDataSyncService.stopCanalSync();
-            
             // 等待一秒
             Thread.sleep(1000);
             
@@ -203,7 +202,7 @@ public class CacheManagementController {
     public Result<Map<String, Object>> getRedisInfo() {
         try {
             Map<String, Object> result = new HashMap<>();
-            
+
             // 获取积分缓存数量
             Long pointsCacheCount = redisTemplate.countExistingKeys(redisTemplate.keys("mall:user:points:*"));
             result.put("pointsCacheCount", pointsCacheCount);

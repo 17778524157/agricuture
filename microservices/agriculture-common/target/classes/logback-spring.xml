@@ -32,6 +32,5 @@
     <logger name="com.agriculture" level="DEBUG"/>
     <logger name="org.springframework.cloud" level="INFO"/>
     <logger name="org.springframework.web" level="INFO"/>
-    <logger name="org.apache.skywalking" level="DEBUG"/>
 
 </configuration>

@@ -9,6 +9,7 @@
         <groupId>com.agriculture</groupId>
         <artifactId>agriculture-microservices</artifactId>
         <version>1.0.0</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>mall-service</artifactId>
@@ -54,11 +55,12 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
-        <!-- Seata分布式事务 -->
+        <!-- Seata分布式事务 (JDK 17兼容性问题, 暂不启用)
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
         </dependency>
+        -->
 
         <!-- MyBatis Plus -->
         <dependency>

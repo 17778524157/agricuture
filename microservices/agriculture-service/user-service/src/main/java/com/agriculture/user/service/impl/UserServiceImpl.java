@@ -652,4 +652,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return null;
         }
     }
+
+    /**
+     * 【改造-新增】系统管理员重置指定用户密码为默认密码 123456
+     */
+    @Override
+    public Result resetPassword(Integer userId) {
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            return Result.fail("用户不存在");
+        }
+        user.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+        int updateResult = userMapper.updateById(user);
+        if (updateResult <= 0) {
+            return Result.fail("重置密码失败");
+        }
+        log.info("管理员重置用户密码成功，用户ID: {}, 用户名: {}", userId, user.getUsername());
+        return Result.success("密码已重置为默认密码：123456，请尽快登录修改");
+    }
 }

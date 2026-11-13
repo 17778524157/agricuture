@@ -1,10 +1,15 @@
 package com.agriculture.user.controller;
 
+import com.agriculture.common.constant.Constants;
 import com.agriculture.common.result.Result;
 import com.agriculture.user.entity.Role;
 import com.agriculture.user.entity.RoleMenu;
 import com.agriculture.user.mapper.RoleMapper;
 import com.agriculture.user.mapper.RoleMenuMapper;
+// 【改造】复用已有 JWT，从令牌解析角色，限制只有管理员能改动固定角色
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +32,24 @@ public class RoleController {
 
     @Autowired
     private RoleMenuMapper roleMenuMapper;
+
+    // 【改造】JWT 密钥，与 UserServiceImpl/网关/UserController 保持一致
+    private static final String SECRET_KEY = "agriculture-secret-key";
+
+    /**
+     * 【改造】角色在新系统中固定为 3 个，仅系统管理员可新增/修改/删除角色、分配角色菜单。
+     * 读接口不做限制（仅返回 3 个固定角色，且用户表单的角色下拉需要）。
+     */
+    private boolean isAdmin(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+            JWT.require(algorithm).build().verify(token);
+            DecodedJWT jwt = JWT.decode(token);
+            return "ROLE_ADMIN".equals(jwt.getClaim("role").asString());
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     @GetMapping
     @ApiOperation("获取角色列表")
@@ -61,7 +84,12 @@ public class RoleController {
 
     @PostMapping
     @ApiOperation("创建角色")
-    public Result<Boolean> createRole(@RequestBody Role role) {
+    // 【改造】仅系统管理员可创建角色（角色固定为 3 个，正常无需新建）
+    public Result<Boolean> createRole(@RequestBody Role role,
+                                      @RequestHeader("token") String token) {
+        if (!isAdmin(token)) {
+            return Result.error(Constants.CODE_403, "权限不足，仅系统管理员可维护角色");
+        }
         try {
             log.info("创建角色请求: {}", role);
             int result = roleMapper.insert(role);
@@ -79,7 +107,12 @@ public class RoleController {
 
     @PutMapping
     @ApiOperation("更新角色")
-    public Result<Boolean> updateRole(@RequestBody Role role) {
+    // 【改造】仅系统管理员可更新角色
+    public Result<Boolean> updateRole(@RequestBody Role role,
+                                      @RequestHeader("token") String token) {
+        if (!isAdmin(token)) {
+            return Result.error(Constants.CODE_403, "权限不足，仅系统管理员可维护角色");
+        }
         try {
             log.info("更新角色请求: {}", role);
             int result = roleMapper.updateById(role);
@@ -97,7 +130,12 @@ public class RoleController {
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除角色")
-    public Result<Boolean> deleteRole(@PathVariable Integer id) {
+    // 【改造】仅系统管理员可删除角色
+    public Result<Boolean> deleteRole(@PathVariable Integer id,
+                                      @RequestHeader("token") String token) {
+        if (!isAdmin(token)) {
+            return Result.error(Constants.CODE_403, "权限不足，仅系统管理员可维护角色");
+        }
         try {
             log.info("删除角色请求，id: {}", id);
             int result = roleMapper.deleteById(id);
@@ -129,7 +167,13 @@ public class RoleController {
 
     @PostMapping("/roleMenu/{roleId}")
     @ApiOperation("分配角色菜单权限")
-    public Result<Boolean> assignRoleMenus(@PathVariable Integer roleId, @RequestBody List<Integer> menuIds) {
+    // 【改造】仅系统管理员可分配角色菜单
+    public Result<Boolean> assignRoleMenus(@PathVariable Integer roleId,
+                                          @RequestBody List<Integer> menuIds,
+                                          @RequestHeader("token") String token) {
+        if (!isAdmin(token)) {
+            return Result.error(Constants.CODE_403, "权限不足，仅系统管理员可维护角色");
+        }
         try {
             log.info("分配角色菜单权限请求，roleId: {}, menuIds: {}", roleId, menuIds);
             

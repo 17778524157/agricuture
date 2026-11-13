@@ -15,6 +15,10 @@ import com.agriculture.user.dto.PersonalInfoResponse;
 import com.agriculture.user.dto.PasswordChangeRequest;
 import com.agriculture.user.entity.User;
 import com.agriculture.user.service.UserService;
+// 【改造】复用项目已有 JWT 能力（与 UserServiceImpl / 网关同一套），从令牌解析角色，不引入新依赖
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +41,26 @@ public class UserController {
 
     @Autowired
     private UserService userService; // 用户服务接口，用于处理用户相关的业务逻辑
+
+    // 【改造】JWT 密钥，与 UserServiceImpl、网关保持一致（沿用原实现，不新增配置）
+    private static final String SECRET_KEY = "agriculture-secret-key";
+
+    /**
+     * 【改造】页面菜单级权限控制：判断当前令牌是否属于系统管理员。
+     * 角色直接从已通过网关校验的 JWT 中解析，前端无法通过改 localStorage 越权。
+     * 仅"用户账号管理"类接口调用此方法；个人改密 / 个人信息等自助接口不调用。
+     */
+    private boolean isAdmin(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+            JWT.require(algorithm).build().verify(token);          // 校验签名与有效期
+            DecodedJWT jwt = JWT.decode(token);
+            return "ROLE_ADMIN".equals(jwt.getClaim("role").asString());
+        } catch (Exception e) {
+            log.warn("用户管理接口鉴权失败：{}", e.getMessage());
+            return false;
+        }
+    }
 
     /**
      * 用户登录接口
@@ -74,10 +98,14 @@ public class UserController {
      * 获取用户列表接口
      * @return 返回所有用户列表
      */
+    // 【改造】禁止普通角色访问用户管理：从 token 头解析角色，仅管理员可查询用户列表
     @GetMapping("/list")
     @ApiOperation("获取用户列表")
-    public List<User> getUserList() {
-        return userService.list();
+    public Result<List<User>> getUserList(@RequestHeader("token") String token) {
+        if (!isAdmin(token)) {
+            return Result.error(Constants.CODE_403, "权限不足，仅系统管理员可操作用户账号");
+        }
+        return Result.success(userService.list());
     }
 
     /**
@@ -86,14 +114,19 @@ public class UserController {
      * @return 返回用户信息
      * @throws ServiceException 当用户不存在时抛出异常
      */
+    // 【改造】同样限制仅系统管理员可按 ID 查询用户
     @GetMapping("/{id}")
     @ApiOperation("根据ID获取用户信息")
-    public User getUserById(@PathVariable Integer id) {
+    public Result<User> getUserById(@PathVariable Integer id,
+                                   @RequestHeader("token") String token) {
+        if (!isAdmin(token)) {
+            return Result.error(Constants.CODE_403, "权限不足，仅系统管理员可操作用户账号");
+        }
         User user = userService.getById(id);
         if (user == null) {
             throw new ServiceException("用户不存在");
         }
-        return user;
+        return Result.success(user);
     }
 
     /**
@@ -103,7 +136,12 @@ public class UserController {
      */
     @PostMapping
     @ApiOperation("创建用户")
-    public Result<Boolean> createUser(@Valid @RequestBody User user) {
+    // 【改造】仅系统管理员可新增账号
+    public Result<Boolean> createUser(@Valid @RequestBody User user,
+                                      @RequestHeader("token") String token) {
+        if (!isAdmin(token)) {
+            return Result.error(Constants.CODE_403, "权限不足，仅系统管理员可操作用户账号");
+        }
         try {
             log.info("创建用户请求: {}", user);
             boolean result = userService.save(user);
@@ -126,7 +164,12 @@ public class UserController {
      */
     @PutMapping
     @ApiOperation("更新用户")
-    public Result<Boolean> updateUser(@Valid @RequestBody User user) {
+    // 【改造】仅系统管理员可编辑用户（编辑弹窗中的"角色"下拉即"分配角色"功能）
+    public Result<Boolean> updateUser(@Valid @RequestBody User user,
+                                      @RequestHeader("token") String token) {
+        if (!isAdmin(token)) {
+            return Result.error(Constants.CODE_403, "权限不足，仅系统管理员可操作用户账号");
+        }
         try {
             log.info("更新用户请求: {}", user);
             boolean result = userService.updateById(user);
@@ -149,7 +192,12 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     @ApiOperation("删除用户")
-    public Result<Boolean> deleteUser(@PathVariable Integer id) {
+    // 【改造】仅系统管理员可删除用户
+    public Result<Boolean> deleteUser(@PathVariable Integer id,
+                                      @RequestHeader("token") String token) {
+        if (!isAdmin(token)) {
+            return Result.error(Constants.CODE_403, "权限不足，仅系统管理员可操作用户账号");
+        }
         try {
             log.info("删除用户请求，id: {}", id);
             boolean result = userService.removeById(id);
@@ -247,11 +295,14 @@ public class UserController {
      */
     @GetMapping("/checkUsername")
     @ApiOperation("检查用户名是否已存在")
-    public Result<Boolean> checkUsername(@RequestParam("username") String username) {
+    public Result<Boolean> checkUsername(@RequestParam(value = "username", required = false) String username) {
         log.info("检查用户名是否存在: {}", username);
         try {
+            if (username == null || username.trim().isEmpty()) {
+                return Result.fail("用户名不能为空");
+            }
             boolean exists = userService.isUsernameExists(username);
-            return Result.success(!exists); // 返回true表示可用，false表示已存在
+            return Result.success(!exists);
         } catch (Exception e) {
             log.error("检查用户名失败", e);
             return Result.fail("检查失败");
@@ -265,11 +316,14 @@ public class UserController {
      */
     @GetMapping("/checkPhone")
     @ApiOperation("检查手机号是否已存在")
-    public Result<Boolean> checkPhone(@RequestParam("phone") String phone) {
+    public Result<Boolean> checkPhone(@RequestParam(value = "phone", required = false) String phone) {
         log.info("检查手机号是否存在: {}", phone);
         try {
+            if (phone == null || phone.trim().isEmpty()) {
+                return Result.fail("手机号不能为空");
+            }
             boolean exists = userService.isPhoneExists(phone);
-            return Result.success(!exists); // 返回true表示可用，false表示已存在
+            return Result.success(!exists);
         } catch (Exception e) {
             log.error("检查手机号失败", e);
             return Result.fail("检查失败");
@@ -283,11 +337,14 @@ public class UserController {
      */
     @GetMapping("/checkEmail")
     @ApiOperation("检查邮箱是否已存在")
-    public Result<Boolean> checkEmail(@RequestParam("email") String email) {
+    public Result<Boolean> checkEmail(@RequestParam(value = "email", required = false) String email) {
         log.info("检查邮箱是否存在: {}", email);
         try {
+            if (email == null || email.trim().isEmpty()) {
+                return Result.fail("邮箱不能为空");
+            }
             boolean exists = userService.isEmailExists(email);
-            return Result.success(!exists); // 返回true表示可用，false表示已存在
+            return Result.success(!exists);
         } catch (Exception e) {
             log.error("检查邮箱失败", e);
             return Result.fail("检查失败");
@@ -350,7 +407,20 @@ public class UserController {
             return Result.fail("修改密码失败");
         }
     }
-    
+
+    /**
+     * 【改造-新增】系统管理员重置指定用户密码为默认密码 123456
+     */
+    @PutMapping("/resetPwd/{id}")
+    @ApiOperation("重置用户密码（管理员）")
+    public Result resetPassword(@PathVariable Integer id,
+                                @RequestHeader("token") String token) {
+        if (!isAdmin(token)) {
+            return Result.error(Constants.CODE_403, "权限不足，仅系统管理员可操作用户账号");
+        }
+        return userService.resetPassword(id);
+    }
+
     /**
      * 上传头像接口
      * @param userId 用户ID

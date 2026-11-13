@@ -10,3 +10,11 @@ minio:
 logging:
   level:
     com.agriculture.common: DEBUG
+
+# 禁用Seata自动配置（JDK 17兼容性问题，需要时再开启）
+seata:
+  enabled: false
+spring:
+  autoconfigure:
+    exclude:
+      - io.seata.spring.boot.autoconfigure.SeataAutoConfiguration

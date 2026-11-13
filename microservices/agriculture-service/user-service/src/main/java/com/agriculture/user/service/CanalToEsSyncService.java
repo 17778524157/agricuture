@@ -397,3 +397,4 @@ public class CanalToEsSyncService implements CommandLineRunner {
 
 
 
+

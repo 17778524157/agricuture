@@ -1,6 +1,0 @@
-com\agriculture\pest\entity\Pest.class
-com\agriculture\pest\PestServiceApplication.class
-com\agriculture\pest\controller\PestController.class
-com\agriculture\pest\mapper\PestMapper.class
-com\agriculture\pest\service\IPestService.class
-com\agriculture\pest\service\impl\PestServiceImpl.class

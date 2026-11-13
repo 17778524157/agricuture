@@ -5,7 +5,7 @@
       <div class="header-content">
         <h1 class="page-title">
           <i class="el-icon-user"></i>
-          职工管理
+          用户管理
         </h1>
         <p class="page-subtitle">管理系统用户信息和权限</p>
       </div>
@@ -114,11 +114,13 @@
           :on-success="handleExcelImportSuccess"
           class="upload-btn"
         >
-          <el-button type="success" icon="el-icon-upload" class="action-btn">
+          <!-- 【改造】停用"导入用户"：本系统用户管理只保留 新增/编辑/删除/分配角色/重置密码 -->
+          <el-button v-if="false" type="success" icon="el-icon-upload" class="action-btn">
             导入用户
           </el-button>
         </el-upload>
-        <el-button type="warning" @click="exp" icon="el-icon-download" class="action-btn">
+        <!-- 【改造】停用"导出数据"：不在保留的用户管理功能范围内 -->
+        <el-button v-if="false" type="warning" @click="exp" icon="el-icon-download" class="action-btn">
           导出数据
         </el-button>
       </div>
@@ -229,7 +231,7 @@
           </template>
         </el-table-column>
         
-        <el-table-column label="操作" width="200" align="center" fixed="right">
+        <el-table-column label="操作" width="260" align="center" fixed="right">
           <template slot-scope="scope">
             <div class="action-buttons">
               <el-tooltip content="编辑用户" placement="top">
@@ -241,12 +243,23 @@
                   circle
                 ></el-button>
               </el-tooltip>
-              <el-tooltip content="查看详情" placement="top">
+              <!-- 【改造】停用"查看详情"：保留功能不含此项 -->
+              <el-tooltip v-if="false" content="查看详情" placement="top">
                 <el-button 
                   type="info" 
                   size="mini" 
                   @click="handleView(scope.row)"
                   icon="el-icon-view"
+                  circle
+                ></el-button>
+              </el-tooltip>
+              <!-- 【改造-新增】重置密码：管理员把该用户密码重置为默认密码 123456 -->
+              <el-tooltip content="重置密码" placement="top">
+                <el-button
+                  type="warning"
+                  size="mini"
+                  @click="resetPwd(scope.row)"
+                  icon="el-icon-key"
                   circle
                 ></el-button>
               </el-tooltip>
@@ -531,13 +544,11 @@ export default {
         console.error('获取角色数据失败:', err)
         console.log('使用备用角色数据')
         // 使用备用角色数据
+        // 【改造】备用角色只保留 3 个（正常应来自 /api/role）
         this.roles = [
-          { id: 1, name: '系统管理员', flag: 'ROLE_ADMIN', description: '系统管理员' },
-          { id: 2, name: '农田负责人', flag: 'ROLE_USER1', description: '农田负责人' },
-          { id: 3, name: '仓库管理员', flag: 'ROLE_USER2', description: '仓库管理员' },
-          { id: 4, name: '销售人员', flag: 'ROLE_USER3', description: '销售人员' },
-          { id: 5, name: '采购人员', flag: 'ROLE_USER4', description: '采购人员' },
-          { id: 6, name: '农业专家', flag: 'ROLE_USER5', description: '农业专家' }
+          { id: 1, name: '系统管理员', flag: 'ROLE_ADMIN', description: '拥有全部权限' },
+          { id: 2, name: '仓库管理员', flag: 'ROLE_WAREHOUSE', description: '入库/库存/盘点/出库' },
+          { id: 3, name: '销售业务员', flag: 'ROLE_SALES', description: '客户管理/销售订单' }
         ]
         this.$message.warning('使用备用角色数据')
       })
@@ -635,11 +646,11 @@ export default {
     },
     
     getRoleType(roleFlag) {
+      // 【改造】按新的 3 个角色 flag 配色
       const roleTypes = {
-        'ADMIN': 'danger',
-        'USER': 'primary',
-        'MANAGER': 'success',
-        'GUEST': 'info'
+        'ROLE_ADMIN': 'danger',
+        'ROLE_WAREHOUSE': 'success',
+        'ROLE_SALES': 'primary'
       }
       return roleTypes[roleFlag] || 'info'
     },
@@ -659,6 +670,22 @@ export default {
         console.error('删除用户失败:', err)
         this.$message.error("删除失败：" + (err.message || '未知错误'))
       })
+    },
+    // 【改造-新增】重置指定用户密码（调用管理员重置接口）
+    resetPwd(row) {
+      this.$confirm(`确定将用户【${row.username}】的密码重置为默认密码 123456 吗？`, '重置密码', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        this.request.put("/api/user/resetPwd/" + row.id).then(res => {
+          if (res.code === '200' || res.code === 200) {
+            this.$message.success(res.message || "密码重置成功")
+          } else {
+            this.$message.error(res.message || res.msg || "重置失败")
+          }
+        }).catch(err => {
+          this.$message.error("重置失败：" + (err.message || '未知错误'))
+        })
+      }).catch(() => {})
     },
     handleSelectionChange(val) {
       console.log(val)

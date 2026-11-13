@@ -92,4 +92,10 @@ public interface UserService extends IService<User> {
      * 根据用户名获取用户信息
      */
     User getUserByUsername(String username);
+
+    /**
+     * 【改造-新增】系统管理员重置指定用户密码（重置为默认密码 123456）
+     * 仅管理员可调用（访问控制在 Controller 层完成）
+     */
+    Result resetPassword(Integer userId);
 }

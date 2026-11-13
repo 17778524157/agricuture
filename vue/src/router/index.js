@@ -204,6 +204,14 @@ export const setRoutes = () => {
       menus = [];
     }
 
+    // ===================================================================
+    // 【改造】停用"无视登录角色、强制给所有人追加菜单"的旧逻辑。
+    //   原代码会把 积分商城 / 病虫害管理 / 智能检测 直接塞进 menus，导致后端
+    //   按角色过滤好的菜单在这里又被"加回来"，角色菜单隔离失效。
+    //   现在菜单完全以后端登录接口按 sys_role_menu 返回的为准，故整段停用
+    //   （原实现保留在下方注释中，仅供查阅，请勿重新启用）。
+    // -------------------------------------------------------------------
+    /*
     // ======= 添加积分商城菜单 =======
     const mallMenu = {
       id: 101,
@@ -212,98 +220,35 @@ export const setRoutes = () => {
       path: "/mall",
       pagePath: "mall/Mall",
       children: [
-        {
-          id: 1011,
-          name: "商品列表",
-          path: "/mall",
-          pagePath: "mall/Mall",
-          icon: "el-icon-goods"
-        },
-        {
-          id: 1012,
-          name: "兑换记录",
-          path: "/mall/orders",
-          pagePath: "mall/MallOrders",
-          icon: "el-icon-document"
-        },
-        {
-          id: 1013,
-          name: "积分历史",
-          path: "/mall/points-history",
-          pagePath: "mall/MallPointsHistory",
-          icon: "el-icon-coins"
-        },
-        {
-          id: 1014,
-          name: "积分任务",
-          path: "/mall/points-tasks",
-          pagePath: "mall/PointsTasks",
-          icon: "el-icon-star-on"
-        }
+        { id: 1011, name: "商品列表", path: "/mall", pagePath: "mall/Mall", icon: "el-icon-goods" },
+        { id: 1012, name: "兑换记录", path: "/mall/orders", pagePath: "mall/MallOrders", icon: "el-icon-document" },
+        { id: 1013, name: "积分历史", path: "/mall/points-history", pagePath: "mall/MallPointsHistory", icon: "el-icon-coins" },
+        { id: 1014, name: "积分任务", path: "/mall/points-tasks", pagePath: "mall/PointsTasks", icon: "el-icon-star-on" }
       ]
     };
+    if (!menus.some(item => item.id === mallMenu.id)) { menus.push(mallMenu); }
 
-    // 先检查是否已存在积分商城菜单，避免重复添加
-    if (!menus.some(item => item.id === mallMenu.id)) {
-      menus.push(mallMenu);
-    }
-
-    // ======= 临时添加病虫害管理菜单 (请在实际菜单数据来源处修改) =======
+    // ======= 临时添加病虫害管理菜单 =======
     const pestManagementMenu = {
-      id: 99, // 临时ID，请确保在实际数据中ID唯一
-      name: "病虫害管理",
-      icon: "el-icon-bug",
-      path: null,
+      id: 99, name: "病虫害管理", icon: "el-icon-bug", path: null,
       children: [
-        {
-          id: 991, // 临时ID，请确保在实际数据中ID唯一
-          name: "虫害监测",
-          path: "/pestmonitoring",
-          pagePath: "PestMonitoring",
-          icon: "el-icon-search"
-        },
-        {
-          id: 992, // 临时ID，请确保在实际数据中ID唯一
-          name: "预警管理",
-          path: "/warningmanagement",
-          pagePath: "WarningManagement",
-          icon: "el-icon-warning"
-        },
-        {
-          id: 993, // 临时ID，请确保在实际数据中ID唯一
-          name: "预警仪表盘",
-          path: "/warningdashboard",
-          pagePath: "WarningDashboard",
-          icon: "el-icon-data-analysis"
-        }
+        { id: 991, name: "虫害监测", path: "/pestmonitoring", pagePath: "PestMonitoring", icon: "el-icon-search" },
+        { id: 992, name: "预警管理", path: "/warningmanagement", pagePath: "WarningManagement", icon: "el-icon-warning" },
+        { id: 993, name: "预警仪表盘", path: "/warningdashboard", pagePath: "WarningDashboard", icon: "el-icon-data-analysis" }
       ]
     };
 
     // 添加目标检测系统菜单
     const detectionMenu = {
-      id: 100,
-      name: "智能检测",
-      icon: "el-icon-camera",
-      path: null,
+      id: 100, name: "智能检测", icon: "el-icon-camera", path: null,
       children: [
-        {
-          id: 1001,
-          name: "目标检测系统",
-          path: "/detection",
-          pagePath: "Detection",
-          icon: "el-icon-view"
-        }
+        { id: 1001, name: "目标检测系统", path: "/detection", pagePath: "Detection", icon: "el-icon-view" }
       ]
     };
-
-    // 先检查是否已存在这些菜单，避免重复添加
-    if (!menus.some(item => item.id === pestManagementMenu.id)) {
-      menus.push(pestManagementMenu);
-    }
-    if (!menus.some(item => item.id === detectionMenu.id)) {
-      menus.push(detectionMenu);
-    }
-    // ===============================================================
+    if (!menus.some(item => item.id === pestManagementMenu.id)) { menus.push(pestManagementMenu); }
+    if (!menus.some(item => item.id === detectionMenu.id)) { menus.push(detectionMenu); }
+    */
+    // ===================================================================
 
     // ======= 将更新后的菜单数据存回 localStorage =======
     localStorage.setItem("menus", JSON.stringify(menus)); // 更新 localStorage 中的菜单数据
@@ -360,7 +305,7 @@ export const setRoutes = () => {
 setRoutes()
 
 // 白名单路径，不需要登录即可访问
-const whiteList = ['/login', '/register', '/404']
+const whiteList = ['/login', '/register', '/404', '/403']
 
 // 添加404路由
 const notFoundRoute = {
@@ -374,33 +319,106 @@ if (!routes.some(route => route.path === '/404')) {
   routes.push(notFoundRoute)
 }
 
+// 添加403路由
+const forbiddenRoute = {
+  path: '/403',
+  name: 'Forbidden',
+  component: () => import('../views/Forbidden.vue')
+}
+
+if (!routes.some(route => route.path === '/403')) {
+  routes.push(forbiddenRoute)
+}
+
+// 收集所有有权限的菜单 path
+function getAccessiblePaths(menus) {
+  const paths = new Set()
+  const traverse = (items) => {
+    items.forEach(item => {
+      if (item.path) {
+        // 去掉路径中的参数部分（如 /user/:id 只取 /user）
+        const basePath = item.path.split('/:')[0]
+        paths.add(basePath)
+        // 同时加入去掉斜杠前缀的形式，方便匹配子路由
+        paths.add(basePath.replace(/^\//, ''))
+      }
+      if (item.children && item.children.length) {
+        traverse(item.children)
+      }
+    })
+  }
+  traverse(menus)
+  return paths
+}
+
+// 公共页面路径（所有登录用户都能访问）
+const commonPaths = new Set([
+  '/', '/home', '/person', '/personalSettings', '/password',
+  '/404', '/login', '/register', '/map', '/aiChat', '/im',
+  'home', 'person', 'personalSettings', 'password', 'map', 'aiChat', 'im'
+])
+
 router.beforeEach((to, from, next) => {
   localStorage.setItem("currentPathName", to.name)  // 设置当前的路由名称
   store.commit("setPath")
-  
+
   // 检查用户是否已登录
   const isLoggedIn = !!localStorage.getItem("user")
-  
+
   // 如果访问的不是白名单路径且未登录，则重定向到登录页
   if (!whiteList.includes(to.path) && !isLoggedIn) {
     next("/login")
-  } 
+    return
+  }
+
   // 如果已登录且访问的是登录页或注册页，则重定向到首页
-  else if (isLoggedIn && (to.path === '/login' || to.path === '/register')) {
-    // 修复：如果从登录页/注册页重定向，直接跳转到dashboard而不是home
+  if (isLoggedIn && (to.path === '/login' || to.path === '/register')) {
     next({ path: '/dashboard', replace: true })
+    return
   }
+
   // 修复：处理重定向链中的拼写错误
-  else if (to.path === '/dashbord') {
-    // 重定向到正确拼写的路径
+  if (to.path === '/dashbord') {
     next({ path: '/dashboard', replace: true })
+    return
   }
-  // 检查路由是否存在 - 修复无限重定向问题
-  else if (!to.matched.length) {
+
+  // 检查路由是否存在
+  if (!to.matched.length) {
     next({ path: '/404', replace: true })
-  } else {
-    next()
+    return
   }
+
+  // 已登录用户的角色权限校验
+  if (isLoggedIn && !whiteList.includes(to.path)) {
+    const storeMenus = localStorage.getItem("menus")
+    if (storeMenus) {
+      try {
+        const menus = JSON.parse(storeMenus)
+        const accessiblePaths = getAccessiblePaths(menus)
+
+        // 获取要访问的路径（取第一级）
+        const pathSegments = to.path.split('/').filter(Boolean)
+        const topPath = pathSegments[0] ? '/' + pathSegments[0] : '/'
+
+        // 检查是否有权限：公共页面 或 菜单中包含
+        const hasAccess = commonPaths.has(to.path) ||
+                          commonPaths.has(pathSegments[0]) ||
+                          accessiblePaths.has(to.path) ||
+                          accessiblePaths.has(topPath) ||
+                          accessiblePaths.has(pathSegments[0])
+
+        if (!hasAccess && to.path !== '/403' && to.path !== '/404') {
+          next({ path: '/403', replace: true })
+          return
+        }
+      } catch (e) {
+        console.error('权限校验异常:', e)
+      }
+    }
+  }
+
+  next()
 })
 
 export default router

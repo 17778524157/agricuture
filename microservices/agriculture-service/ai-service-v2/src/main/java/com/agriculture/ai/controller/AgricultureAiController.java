@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -65,15 +66,21 @@ public class AgricultureAiController {
     
     @GetMapping("/chat/history")
     public List<ChatMessage> getChatHistory(
-            @RequestParam String userId,
+            @RequestParam(required = false) String userId,
             @RequestParam(required = false) String sessionId) {
         log.info("获取聊天历史，用户ID: {}, 会话ID: {}", userId, sessionId);
+        if (userId == null || userId.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
         return agricultureAiService.getChatHistory(userId, sessionId);
     }
-    
+
     @GetMapping("/detection/history")
-    public List<PestDetection> getDetectionHistory(@RequestParam String userId) {
+    public List<PestDetection> getDetectionHistory(@RequestParam(required = false) String userId) {
         log.info("获取检测历史，用户ID: {}", userId);
+        if (userId == null || userId.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
         return agricultureAiService.getDetectionHistory(userId);
     }
     
